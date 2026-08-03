@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dilan Jude Trowell — Project Manager, Digital Transformation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12161A;
+    --bg-panel: #181D22;
+    --line: #2A3138;
+    --ink: #E9EAE6;
+    --ink-dim: #9AA3AB;
+    --steel: #5B8FB0;
+    --signal: #E0A458;
+    --ok: #7FA88C;
+    --radius: 2px;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --display: 'Oswald', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--steel);}
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--signal);
+    outline-offset:3px;
+  }
+
+  /* barcode-pattern divider — signature element, referencing traceability/barcode systems work */
+  .trace-rule{
+    height:14px;
+    width:100%;
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--ink) 0px, var(--ink) 2px,
+      transparent 2px, transparent 5px,
+      var(--ink) 5px, var(--ink) 8px,
+      transparent 8px, transparent 11px,
+      var(--ink) 11px, var(--ink) 13px,
+      transparent 13px, transparent 20px
+    );
+    opacity:0.15;
+  }
+
+  /* ---------- status bar ---------- */
+  .statusbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 6vw;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--ink-dim);
+    border-bottom:1px solid var(--line);
+    text-transform:uppercase;
+  }
+  .statusbar .dot{
+    display:inline-block;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--ok);
+    margin-right:8px;
+    box-shadow:0 0 6px var(--ok);
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:9vh 6vw 7vh;
+    max-width:1100px;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--steel);
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin:0 0 18px;
+  }
+  h1{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(2.4rem, 6vw, 4.6rem);
+    line-height:1.02;
+    margin:0 0 20px;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+  }
+  .hero p.thesis{
+    font-size:clamp(1.05rem, 1.6vw, 1.3rem);
+    color:var(--ink-dim);
+    max-width:640px;
+    margin:0 0 36px;
+  }
+  .hero-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+  }
+  .btn{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.04em;
+    text-decoration:none;
+    padding:11px 20px;
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    color:var(--ink);
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .btn:hover{border-color:var(--steel); color:var(--steel);}
+  .btn.primary{
+    background:var(--steel);
+    color:#0F1216;
+    border-color:var(--steel);
+    font-weight:500;
+  }
+  .btn.primary:hover{background:var(--ink); border-color:var(--ink); color:#0F1216;}
+
+  /* ---------- stat strip ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .stat{
+    padding:28px 6vw;
+    border-right:1px solid var(--line);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .num{
+    font-family:var(--display);
+    font-size:clamp(1.6rem, 3vw, 2.2rem);
+    color:var(--signal);
+    display:block;
+  }
+  .stat .label{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    margin-top:6px;
+    display:block;
+  }
+
+  /* ---------- section shell ---------- */
+  section.module{
+    padding:8vh 6vw;
+    max-width:1100px;
+  }
+  .module-head{
+    display:flex;
+    align-items:baseline;
+    gap:16px;
+    margin-bottom:36px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:18px;
+  }
+  .module-head .tag{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--signal);
+    letter-spacing:0.08em;
+  }
+  .module-head h2{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:clamp(1.3rem, 2.2vw, 1.8rem);
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .module-head .meta{
+    margin-left:auto;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--ink-dim);
+  }
+
+  /* ---------- project cards ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .card{
+    background:var(--bg-panel);
+    padding:28px 30px;
+  }
+  .card h3{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:1.05rem;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .card .role{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--steel);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    margin-bottom:14px;
+    display:block;
+  }
+  .card p{
+    margin:0;
+    color:var(--ink-dim);
+    font-size:0.94rem;
+  }
+  .card .impact{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px dashed var(--line);
+    font-size:0.86rem;
+    color:var(--ok);
+    font-family:var(--mono);
+  }
+
+  @media (max-width:760px){
+    .grid{grid-template-columns:1fr;}
+    .stats{grid-template-columns:repeat(2, 1fr);}
+    .stat:nth-child(2){border-right:none;}
+  }
+
+  /* ---------- timeline (real sequence, so numbering is meaningful here) ---------- */
+  .timeline{border-left:1px solid var(--line); margin-left:6px;}
+  .tl-item{
+    position:relative;
+    padding:0 0 34px 32px;
+  }
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{
+    content:'';
+    position:absolute;
+    left:-5.5px; top:4px;
+    width:10px; height:10px;
+    background:var(--bg);
+    border:2px solid var(--signal);
+    border-radius:50%;
+  }
+  .tl-item .when{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    display:block;
+    margin-bottom:4px;
+  }
+  .tl-item h4{
+    margin:0 0 4px;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:1rem;
+  }
+  .tl-item p{
+    margin:0;
+    color:var(--ink-dim);
+    font-size:0.92rem;
+    max-width:600px;
+  }
+
+  /* ---------- toolchips ---------- */
+  .chips{display:flex; flex-wrap:wrap; gap:10px;}
+  .chip{
+    font-family:var(--mono);
+    font-size:12px;
+    padding:7px 13px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    color:var(--ink-dim);
+  }
+
+  footer{
+    padding:7vh 6vw 8vh;
+    border-top:1px solid var(--line);
+    max-width:1100px;
+  }
+  footer h2{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:clamp(1.6rem, 3vw, 2.4rem);
+    margin:0 0 20px;
+  }
+  footer .contact-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    font-family:var(--mono);
+    font-size:13.5px;
+    color:var(--ink-dim);
+  }
+  footer .contact-row a{color:var(--ink);}
+  .fine{
+    margin-top:40px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--ink-dim);
+    opacity:0.6;
+  }
+</style>
+</head>
+<body>
+
+  <div class="statusbar">
+    <span><span class="dot"></span>Available for new roles</span>
+    <span>Colombo, Sri Lanka</span>
+  </div>
+
+  <header class="hero">
+    <p class="eyebrow">Project Manager · Digital Transformation</p>
+    <h1>Dilan Jude&nbsp;Trowell</h1>
+    <p class="thesis">I take manufacturing, enterprise systems, and mobile products from concept to production —
+      across SAP integrations, traceability platforms, BI enablement, and customer-facing apps —
+      leading external development teams and cross-functional stakeholders end to end.</p>
+    <div class="hero-links">
+      <a class="btn primary" href="mailto:djtrowell@gmail.com">Email me</a>
+      <a class="btn" href="https://linkedin.com/in/dilan-jude-trowell" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="tel:+94719645401">+94 71 964 5401</a>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><span class="num">3+</span><span class="label">Years in PM &amp; BA roles</span></div>
+    <div class="stat"><span class="num">9</span><span class="label">Digital transformation projects led</span></div>
+    <div class="stat"><span class="num">20</span><span class="label">Cross-functional BI team, 6 depts</span></div>
+    <div class="stat"><span class="num">2025</span><span class="label">NCQP Gold Award winner</span></div>
+  </div>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="enterprise">
+    <div class="module-head">
+      <span class="tag">01</span>
+      <h2>Enterprise Systems &amp; Analytics</h2>
+      <span class="meta">CEAT Kelani International Tyres</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>Enterprise Data Warehousing &amp; BI Platform</h3>
+        <span class="role">Project Lead</span>
+        <p>Directed an external development team to build a data warehouse and BI platform integrating
+          SAP S/4HANA with Sales and Marketing systems, automating visualization and reporting.</p>
+        <div class="impact">→ Manual reporting replaced with automated, integrated dashboards</div>
+      </div>
+      <div class="card">
+        <h3>AutoBridge OT–IT Integration</h3>
+        <span class="role">Project Lead</span>
+        <p>Took a pilot from proof of concept to a full production system, unifying shop-floor and
+          enterprise data into a single source feeding real-time KPI dashboards.</p>
+        <div class="impact">→ Pilot scaled to full production, external dev team</div>
+      </div>
+      <div class="card">
+        <h3>AutoBridge 2W Barcode Management System</h3>
+        <span class="role">Project Lead</span>
+        <p>Directed full production traceability from tyre building through final inspection across
+          shop-floor user roles, with an external development team.</p>
+        <div class="impact">→ Reduced manual reconciliation effort and error rate</div>
+      </div>
+      <div class="card">
+        <h3>Digital Traceability (Factory-Wide)</h3>
+        <span class="role">Project Lead — In Progress</span>
+        <p>Leading end-to-end manufacturing traceability across the entire factory: material genealogy,
+          production traceability, real-time inventory visibility, and RMS-to-dispatch integration.</p>
+        <div class="impact">→ In progress</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="customer">
+    <div class="module-head">
+      <span class="tag">02</span>
+      <h2>Mobile &amp; Customer-Facing Products</h2>
+      <span class="meta">CEAT Kelani International Tyres</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>CEAT Connect Mobile App</h3>
+        <span class="role">Project Lead, team of 3</span>
+        <p>Delivered from concept to public launch on both the Google Play Store and Apple App Store,
+          leading a cross-functional team.</p>
+        <div class="impact">→ Live on iOS &amp; Android</div>
+      </div>
+      <div class="card">
+        <h3>Dealer &amp; Customer Digitization</h3>
+        <span class="role">Project Lead — In Progress</span>
+        <p>Spearheading a mobile-enabled dealer and customer service workflow with automated
+          notifications, digital image validation, and integrated pickup logistics — a first-of-its-kind
+          capability in the local tyre market.</p>
+        <div class="impact">→ In progress</div>
+      </div>
+      <div class="card">
+        <h3>Digital Invoice Reconciliation &amp; Document Management</h3>
+        <span class="role">Project Lead — In Progress</span>
+        <p>Transforming invoice processing through OCR-based digitization, automated SAP reconciliation,
+          and end-to-end traceability from invoice receipt to secure document storage.</p>
+        <div class="impact">→ In progress</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="workforce">
+    <div class="module-head">
+      <span class="tag">03</span>
+      <h2>Workforce Enablement</h2>
+      <span class="meta">CEAT Kelani International Tyres</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>LevelUp — Digital Learning Transformation</h3>
+        <span class="role">Project Lead</span>
+        <p>Turned low digital-learning engagement into a full-scale transformation through gamified
+          sprints, smart nudges, and role-based content — building a learning culture that stuck.</p>
+        <div class="impact">→ Gold Award, NCQP 2025</div>
+      </div>
+      <div class="card">
+        <h3>CEAT Power BI Champions Initiative</h3>
+        <span class="role">Founder &amp; Lead</span>
+        <p>Built a 20-member cross-functional analytics team spanning 6 departments from the ground up,
+          shifting the organization from manual reporting to visual, data-driven decision-making.</p>
+        <div class="impact">→ 20 members · 6 departments</div>
+      </div>
+      <div class="card">
+        <h3>Information &amp; Cybersecurity Awareness Week</h3>
+        <span class="role">Organizer &amp; Lead</span>
+        <p>Organized and delivered a company-wide awareness campaign for 2 consecutive years, driving
+          engagement across departments.</p>
+        <div class="impact">→ Delivered 2 years running</div>
+      </div>
+      <div class="card">
+        <h3>Monthly Steering Committee</h3>
+        <span class="role">Facilitator</span>
+        <p>Facilitate monthly steering committee meetings, reporting progress, risks, and milestones to
+          senior leadership across the full project portfolio.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="path">
+    <div class="module-head">
+      <span class="tag">04</span>
+      <h2>Career Path</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <span class="when">Jan 2024 — Present</span>
+        <h4>Associate Project Manager, CEAT Kelani International Tyres (Pvt) Ltd</h4>
+        <p>Leading a portfolio of digital transformation initiatives across manufacturing, enterprise
+          systems, mobile apps, analytics, and workforce enablement.</p>
+      </div>
+      <div class="tl-item">
+        <span class="when">Sep 2024 — Dec 2024 (concurrent)</span>
+        <h4>Business Analyst, Cemex Software (Pvt) Ltd</h4>
+        <p>Reviewed a client's HRM system into a structured development roadmap; managed end-to-end
+          change requests.</p>
+      </div>
+      <div class="tl-item">
+        <span class="when">May 2021 — Aug 2023</span>
+        <h4>Business Analyst – Associate, Jigsaw Ensemble (Pvt) Ltd</h4>
+        <p>Delivered client projects including a Hotel Reservation System, Toyota Lanka Supplier
+          Registration Portal, Commodity Bookkeeping System, and CSL Gem Certificate Generation Portal.</p>
+      </div>
+      <div class="tl-item">
+        <span class="when">Jan 2021 — May 2021</span>
+        <h4>Business Analyst – Intern, Jigsaw Ensemble (Pvt) Ltd</h4>
+        <p>Documented client requirements, maintained WordPress content, delivered Office 365 support
+          within SLA.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="toolkit">
+    <div class="module-head">
+      <span class="tag">05</span>
+      <h2>Toolkit</h2>
+    </div>
+    <div class="chips">
+      <span class="chip">JIRA</span>
+      <span class="chip">ClickUp</span>
+      <span class="chip">SAP S/4HANA</span>
+      <span class="chip">Power BI</span>
+      <span class="chip">Office 365</span>
+      <span class="chip">WordPress</span>
+      <span class="chip">Figma</span>
+      <span class="chip">Adobe Photoshop</span>
+      <span class="chip">Adobe Illustrator</span>
+      <span class="chip">Adobe XD</span>
+      <span class="chip">Canva</span>
+      <span class="chip">GitHub</span>
+    </div>
+  </section>
+
+  <footer>
+    <h2>Let's talk</h2>
+    <div class="contact-row">
+      <span>📍 Panadura, Sri Lanka</span>
+      <a href="mailto:djtrowell@gmail.com">djtrowell@gmail.com</a>
+      <a href="tel:+94719645401">+94 71 964 5401</a>
+      <a href="https://linkedin.com/in/dilan-jude-trowell" target="_blank" rel="noopener">linkedin.com/in/dilan-jude-trowell</a>
+    </div>
+    <p class="fine">BSc Business Information Systems Management (1st Class), Cardiff Metropolitan University · PMP® in progress</p>
+  </footer>
+
+</body>
+</html>
