@@ -71,7 +71,7 @@
     border-bottom:1px solid var(--line);
     text-transform:uppercase;
   }
-  .statusbar .dot{
+  .statusbar .dot-live{
     display:inline-block;
     width:7px;height:7px;
     border-radius:50%;
@@ -123,6 +123,8 @@
     border:1px solid var(--line);
     color:var(--ink);
     transition:border-color 0.15s ease, color 0.15s ease;
+    background:transparent;
+    cursor:pointer;
   }
   .btn:hover{border-color:var(--steel); color:var(--steel);}
   .btn.primary{
@@ -236,6 +238,65 @@
     font-family:var(--mono);
   }
 
+  /* ---------- image gallery / slideshow (per project) ---------- */
+  .gallery{
+    position:relative;
+    margin:0 0 16px;
+    border:1px solid var(--line);
+    background:#0D1013;
+    overflow:hidden;
+    border-radius:var(--radius);
+  }
+  .gallery-track{
+    display:flex;
+    transition:transform 0.35s ease;
+  }
+  .gallery-track img{
+    width:100%;
+    flex:0 0 100%;
+    display:block;
+    aspect-ratio:16/10;
+    object-fit:cover;
+  }
+  .gallery-nav{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(18,22,26,0.7);
+    border:1px solid var(--line);
+    color:var(--ink);
+    width:32px; height:32px;
+    border-radius:50%;
+    cursor:pointer;
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .gallery-nav:hover{border-color:var(--steel); color:var(--steel);}
+  .gallery-nav.prev{left:10px;}
+  .gallery-nav.next{right:10px;}
+  .gallery-dots{
+    position:absolute;
+    bottom:10px;
+    left:0; right:0;
+    display:flex;
+    justify-content:center;
+    gap:6px;
+  }
+  .gallery-dots .dot{
+    width:6px; height:6px;
+    border-radius:50%;
+    border:none;
+    background:rgba(233,234,230,0.35);
+    cursor:pointer;
+    padding:0;
+  }
+  .gallery-dots .dot.active{ background:var(--signal); }
+  .gallery.single .gallery-nav, .gallery.single .gallery-dots{ display:none; }
+
   @media (max-width:760px){
     .grid{grid-template-columns:1fr;}
     .stats{grid-template-columns:repeat(2, 1fr);}
@@ -278,6 +339,33 @@
     color:var(--ink-dim);
     font-size:0.92rem;
     max-width:600px;
+  }
+
+  /* ---------- education ---------- */
+  .edu-list{ display:flex; flex-direction:column; gap:22px; }
+  .edu-item{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding-bottom:22px;
+    border-bottom:1px dashed var(--line);
+  }
+  .edu-item:last-child{ border-bottom:none; padding-bottom:0; }
+  .edu-item h4{
+    margin:0 0 4px;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:1rem;
+  }
+  .edu-item .school{
+    color:var(--ink-dim);
+    font-size:0.92rem;
+  }
+  .edu-item .when{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--signal);
+    white-space:nowrap;
   }
 
   /* ---------- toolchips ---------- */
@@ -323,7 +411,7 @@
 <body>
 
   <div class="statusbar">
-    <span><span class="dot"></span>Available for new roles</span>
+    <span><span class="dot-live"></span>Available for new roles</span>
     <span>Colombo, Sri Lanka</span>
   </div>
 
@@ -357,6 +445,17 @@
     </div>
     <div class="grid">
       <div class="card">
+        <!-- EXAMPLE GALLERY: replace src="" paths with your own image files, or delete this
+             .gallery div entirely if you don't have photos for this project -->
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="images/bi-platform-1.jpg" alt="Enterprise BI platform dashboard screenshot">
+            <img src="images/bi-platform-2.jpg" alt="Enterprise BI platform data flow diagram">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
         <h3>Enterprise Data Warehousing &amp; BI Platform</h3>
         <span class="role">Project Lead</span>
         <p>Directed an external development team to build a data warehouse and BI platform integrating
@@ -397,6 +496,15 @@
     </div>
     <div class="grid">
       <div class="card">
+        <!-- EXAMPLE GALLERY with a single image (nav arrows/dots auto-hide with class="single") -->
+        <div class="gallery single" data-gallery>
+          <div class="gallery-track">
+            <img src="images/ceat-connect-app.jpg" alt="CEAT Connect mobile app screen">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
         <h3>CEAT Connect Mobile App</h3>
         <span class="role">Project Lead, team of 3</span>
         <p>Delivered from concept to public launch on both the Google Play Store and Apple App Store,
@@ -497,9 +605,48 @@
 
   <div class="trace-rule"></div>
 
-  <section class="module" id="toolkit">
+  <section class="module" id="education">
     <div class="module-head">
       <span class="tag">05</span>
+      <h2>Education &amp; Certifications</h2>
+    </div>
+    <div class="edu-list">
+      <div class="edu-item">
+        <div>
+          <h4>BSc in Business Information Systems Management — 1st Class</h4>
+          <div class="school">Cardiff Metropolitan University</div>
+        </div>
+        <div class="when">2020</div>
+      </div>
+      <div class="edu-item">
+        <div>
+          <h4>HND in Computing &amp; Software Engineering</h4>
+          <div class="school">ICBT</div>
+        </div>
+        <div class="when">2019</div>
+      </div>
+      <div class="edu-item">
+        <div>
+          <h4>Diploma in Graphic Designing</h4>
+          <div class="school">Thesaurus Computing Centre</div>
+        </div>
+        <div class="when"></div>
+      </div>
+      <div class="edu-item">
+        <div>
+          <h4>PMP® Certification</h4>
+          <div class="school">35 contact hours of formal project management training completed; preparing for examination</div>
+        </div>
+        <div class="when">In Progress</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="toolkit">
+    <div class="module-head">
+      <span class="tag">06</span>
       <h2>Toolkit</h2>
     </div>
     <div class="chips">
@@ -526,8 +673,39 @@
       <a href="tel:+94719645401">+94 71 964 5401</a>
       <a href="https://linkedin.com/in/dilan-jude-trowell" target="_blank" rel="noopener">linkedin.com/in/dilan-jude-trowell</a>
     </div>
-    <p class="fine">BSc Business Information Systems Management (1st Class), Cardiff Metropolitan University · PMP® in progress</p>
   </footer>
+
+  <script>
+    document.querySelectorAll('.gallery[data-gallery]').forEach(function (gallery) {
+      var track = gallery.querySelector('.gallery-track');
+      var slides = Array.prototype.slice.call(track.children);
+      var dotsWrap = gallery.querySelector('.gallery-dots');
+      var index = 0;
+
+      if (slides.length <= 1) { gallery.classList.add('single'); }
+
+      slides.forEach(function (_, i) {
+        var dot = document.createElement('button');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Go to image ' + (i + 1));
+        dot.addEventListener('click', function () { go(i); });
+        dotsWrap.appendChild(dot);
+      });
+
+      function go(i) {
+        index = (i + slides.length) % slides.length;
+        track.style.transform = 'translateX(-' + (index * 100) + '%)';
+        dotsWrap.querySelectorAll('.dot').forEach(function (d, di) {
+          d.classList.toggle('active', di === index);
+        });
+      }
+
+      var prevBtn = gallery.querySelector('.prev');
+      var nextBtn = gallery.querySelector('.next');
+      if (prevBtn) prevBtn.addEventListener('click', function () { go(index - 1); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { go(index + 1); });
+    });
+  </script>
 
 </body>
 </html>
