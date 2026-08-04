@@ -237,6 +237,16 @@
     color:var(--ok);
     font-family:var(--mono);
   }
+  .card-link{
+    display:inline-block;
+    margin-top:12px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--steel);
+    text-decoration:none;
+    letter-spacing:0.02em;
+  }
+  .card-link:hover{ color:var(--signal); text-decoration:underline; }
 
   /* ---------- image gallery / slideshow (per project) ---------- */
   .gallery{
@@ -463,6 +473,15 @@
         <div class="impact">→ Manual reporting replaced with automated, integrated dashboards</div>
       </div>
       <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="images/autobridge-otit-1.jpg" alt="AutoBridge OT-IT Integration dashboard screenshot">
+            <img src="images/autobridge-otit-2.jpg" alt="AutoBridge OT-IT Integration shop-floor data view">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
         <h3>AutoBridge OT–IT Integration</h3>
         <span class="role">Project Lead</span>
         <p>Took a pilot from proof of concept to a full production system, unifying shop-floor and
@@ -470,16 +489,6 @@
         <div class="impact">→ Pilot scaled to full production, external dev team</div>
       </div>
       <div class="card">
-        <div class="gallery" data-gallery>
-          <div class="gallery-track">
-            <img src="AutoBridge 2W_1.jpeg" alt="AutoBridge 2W Barcode Management System Walkthrough">
-            <img src="AutoBridge 2W_2.jpeg" alt="AutoBridge 2W Barcode Management System Walkthrough">
-            <img src="AutoBridge 2W_3.jpeg" alt="AutoBridge 2W Barcode Management System Walkthrough">
-          </div>
-          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
-          <button class="gallery-nav next" aria-label="Next image">›</button>
-          <div class="gallery-dots"></div>
-        </div>
         <h3>AutoBridge 2W Barcode Management System</h3>
         <span class="role">Project Lead</span>
         <p>Directed full production traceability from tyre building through final inspection across
@@ -487,12 +496,18 @@
         <div class="impact">→ Reduced manual reconciliation effort and error rate</div>
       </div>
       <div class="card">
-        
         <h3>Digital Traceability (Factory-Wide)</h3>
         <span class="role">Project Lead — In Progress</span>
         <p>Leading end-to-end manufacturing traceability across the entire factory: material genealogy,
           production traceability, real-time inventory visibility, and RMS-to-dispatch integration.</p>
         <div class="impact">→ In progress</div>
+      </div>
+      <div class="card">
+        <!-- PLACEHOLDER 5th project — replace title, role, description and impact below -->
+        <h3>[Project Title]</h3>
+        <span class="role">Project Lead</span>
+        <p>[Add a short description of this project — what it involved and your role in it.]</p>
+        <div class="impact">→ [Add the outcome or impact]</div>
       </div>
     </div>
   </section>
@@ -550,13 +565,32 @@
     </div>
     <div class="grid">
       <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="images/levelup-1.jpg" alt="LevelUp digital learning initiative screenshot">
+            <img src="images/levelup-2.jpg" alt="LevelUp gamified learning sprint screenshot">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
         <h3>LevelUp — Digital Learning Transformation</h3>
         <span class="role">Project Lead</span>
         <p>Turned low digital-learning engagement into a full-scale transformation through gamified
           sprints, smart nudges, and role-based content — building a learning culture that stuck.</p>
         <div class="impact">→ Gold Award, NCQP 2025</div>
+        <a class="card-link" href="#" target="_blank" rel="noopener">View case study ↗</a>
       </div>
       <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="images/powerbi-champions-1.jpg" alt="Power BI Champions Initiative team session screenshot">
+            <img src="images/powerbi-champions-2.jpg" alt="Power BI Champions Initiative dashboard screenshot">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
         <h3>CEAT Power BI Champions Initiative</h3>
         <span class="role">Founder &amp; Lead</span>
         <p>Built a 20-member cross-functional analytics team spanning 6 departments from the ground up,
@@ -564,17 +598,20 @@
         <div class="impact">→ 20 members · 6 departments</div>
       </div>
       <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="images/cybersecurity-week-1.jpg" alt="Information and Cybersecurity Awareness Week event photo">
+            <img src="images/cybersecurity-week-2.jpg" alt="Information and Cybersecurity Awareness Week campaign material">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
         <h3>Information &amp; Cybersecurity Awareness Week</h3>
         <span class="role">Organizer &amp; Lead</span>
         <p>Organized and delivered a company-wide awareness campaign for 2 consecutive years, driving
           engagement across departments.</p>
         <div class="impact">→ Delivered 2 years running</div>
-      </div>
-      <div class="card">
-        <h3>Monthly Steering Committee</h3>
-        <span class="role">Facilitator</span>
-        <p>Facilitate monthly steering committee meetings, reporting progress, risks, and milestones to
-          senior leadership across the full project portfolio.</p>
       </div>
     </div>
   </section>
