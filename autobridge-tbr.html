@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoBridge 2W Barcode Management System — Project Journey · Dilan Jude Trowell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12161A;
+    --bg-panel: #181D22;
+    --line: #2A3138;
+    --ink: #E9EAE6;
+    --ink-dim: #9AA3AB;
+    --steel: #5B8FB0;
+    --signal: #E0A458;
+    --ok: #7FA88C;
+    --danger: #C97B6E;
+    --radius: 2px;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --display: 'Oswald', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--steel);}
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--signal); outline-offset:3px; }
+
+  .trace-rule{
+    height:14px; width:100%;
+    background-image: repeating-linear-gradient(
+      90deg, var(--ink) 0px, var(--ink) 2px, transparent 2px, transparent 5px,
+      var(--ink) 5px, var(--ink) 8px, transparent 8px, transparent 11px,
+      var(--ink) 11px, var(--ink) 13px, transparent 13px, transparent 20px);
+    opacity:0.15;
+  }
+
+  .topbar{
+    display:flex; align-items:center; gap:14px;
+    padding:16px 6vw;
+    font-family:var(--mono); font-size:12.5px; letter-spacing:0.04em;
+    border-bottom:1px solid var(--line);
+  }
+  .topbar a.back{
+    color:var(--ink-dim); text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+  }
+  .topbar a.back:hover{ color:var(--signal); }
+  .topbar .crumb{ color:var(--ink-dim); opacity:0.5; }
+  .topbar .current{ color:var(--ink); }
+
+  .page-hero{ padding:8vh 6vw 5vh; max-width:1000px; }
+  .eyebrow{
+    font-family:var(--mono); font-size:12.5px; color:var(--steel);
+    letter-spacing:0.12em; text-transform:uppercase; margin:0 0 16px;
+  }
+  h1{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(2rem, 5vw, 3.4rem); line-height:1.05;
+    margin:0 0 20px; letter-spacing:-0.01em; text-transform:uppercase;
+  }
+  .page-hero .lede{
+    font-size:clamp(1rem, 1.4vw, 1.15rem); color:var(--ink-dim); max-width:700px; margin:0 0 28px;
+  }
+  .meta-row{
+    display:flex; flex-wrap:wrap; gap:24px;
+    font-family:var(--mono); font-size:12px; color:var(--ink-dim);
+    padding-top:20px; border-top:1px solid var(--line);
+  }
+  .meta-row strong{ color:var(--ink); font-weight:500; }
+
+  section.module{ padding:6vh 6vw; max-width:1000px; }
+  .module-head{
+    display:flex; align-items:baseline; gap:16px; margin-bottom:32px;
+    border-bottom:1px solid var(--line); padding-bottom:16px;
+  }
+  .module-head .tag{ font-family:var(--mono); font-size:12px; color:var(--signal); letter-spacing:0.08em; }
+  .module-head h2{
+    font-family:var(--display); text-transform:uppercase;
+    font-size:clamp(1.2rem, 2vw, 1.6rem); margin:0; letter-spacing:0.01em;
+  }
+  .module-head p.sub{
+    font-family:var(--sans); font-size:0.9rem; color:var(--ink-dim); margin:6px 0 0;
+  }
+
+  /* ---------- phase timeline ---------- */
+  .phases{ position:relative; }
+  .phases::before{
+    content:''; position:absolute; left:19px; top:8px; bottom:8px; width:2px;
+    background:linear-gradient(var(--signal), var(--line));
+  }
+  .phase{
+    position:relative; display:grid; grid-template-columns:40px 1fr; gap:20px;
+    padding-bottom:34px;
+  }
+  .phase:last-child{ padding-bottom:0; }
+  .phase-num{
+    position:relative; z-index:1;
+    width:40px; height:40px; border-radius:50%;
+    background:var(--bg-panel); border:2px solid var(--signal);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:13px; color:var(--signal); font-weight:500;
+  }
+  .phase-body{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 22px;
+  }
+  .phase-body .when{
+    font-family:var(--mono); font-size:11px; color:var(--ink-dim);
+    text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:6px;
+  }
+  .phase-body h3{ margin:0 0 8px; font-family:var(--sans); font-weight:600; font-size:1.02rem; }
+  .phase-body p{ margin:0; color:var(--ink-dim); font-size:0.92rem; }
+
+  /* ---------- mockups gallery ---------- */
+  .gallery{
+    position:relative; margin:0 0 8px; border:1px solid var(--line);
+    background:#0D1013; overflow:hidden; border-radius:var(--radius);
+  }
+  .gallery-track{ display:flex; transition:transform 0.35s ease; }
+  .gallery-track img{ width:100%; flex:0 0 100%; display:block; aspect-ratio:16/9; object-fit:cover; }
+  .gallery-nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    background:rgba(18,22,26,0.7); border:1px solid var(--line); color:var(--ink);
+    width:32px; height:32px; border-radius:50%; cursor:pointer;
+    font-family:var(--sans); font-size:16px; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .gallery-nav:hover{ border-color:var(--steel); color:var(--steel); }
+  .gallery-nav.prev{ left:10px; }
+  .gallery-nav.next{ right:10px; }
+  .gallery-dots{ position:absolute; bottom:10px; left:0; right:0; display:flex; justify-content:center; gap:6px; }
+  .gallery-dots .dot{ width:6px; height:6px; border-radius:50%; border:none; background:rgba(233,234,230,0.35); cursor:pointer; padding:0; }
+  .gallery-dots .dot.active{ background:var(--signal); }
+  .gallery.single .gallery-nav, .gallery.single .gallery-dots{ display:none; }
+  .gallery-caption{
+    font-family:var(--mono); font-size:11.5px; color:var(--ink-dim);
+    margin:0 0 20px; letter-spacing:0.02em;
+  }
+
+  /* ---------- journey narrative ---------- */
+  .journey-list{ display:flex; flex-direction:column; gap:18px; }
+  .journey-item{
+    display:flex; gap:16px; padding-bottom:18px; border-bottom:1px dashed var(--line);
+  }
+  .journey-item:last-child{ border-bottom:none; padding-bottom:0; }
+  .journey-item .icon{
+    font-family:var(--mono); font-size:11px; color:var(--signal);
+    border:1px solid var(--line); border-radius:50%; width:26px; height:26px;
+    display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .journey-item p{ margin:0; color:var(--ink-dim); font-size:0.93rem; }
+
+  /* ---------- challenges & mitigation ---------- */
+  .cm-grid{ display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); }
+  .cm-row{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); }
+  .cm-row > div{ background:var(--bg-panel); padding:18px 20px; }
+  .cm-row .label{
+    font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em;
+    display:block; margin-bottom:8px;
+  }
+  .cm-row .challenge .label{ color:var(--danger); }
+  .cm-row .mitigation .label{ color:var(--ok); }
+  .cm-row p{ margin:0; font-size:0.9rem; color:var(--ink-dim); }
+  @media (max-width:700px){ .cm-row{ grid-template-columns:1fr; } .phase{ grid-template-columns:32px 1fr; } .phase-num{ width:32px; height:32px; font-size:11px; } }
+
+  /* ---------- learnings ---------- */
+  .learn-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .learn-card{ background:var(--bg-panel); padding:22px 24px; }
+  .learn-card .quote-mark{ font-family:var(--display); font-size:2rem; color:var(--signal); line-height:1; display:block; margin-bottom:6px; }
+  .learn-card p{ margin:0; color:var(--ink-dim); font-size:0.93rem; }
+  @media (max-width:700px){ .learn-grid{ grid-template-columns:1fr; } }
+
+  footer{
+    padding:6vh 6vw 8vh; border-top:1px solid var(--line); max-width:1000px;
+    font-family:var(--mono); font-size:12.5px;
+  }
+  footer a{ color:var(--steel); text-decoration:none; }
+  footer a:hover{ color:var(--signal); }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="back" href="index.html">← Back to portfolio</a>
+    <span class="crumb">/</span>
+    <span class="current">AutoBridge 2W Barcode Management System</span>
+  </div>
+
+  <header class="page-hero">
+    <p class="eyebrow">Project Journey · Enterprise Systems &amp; Analytics</p>
+    <h1>AutoBridge 2W Barcode Management System</h1>
+    <p class="lede">A behind-the-scenes look at how this project moved from an idea on a whiteboard to a
+      live production traceability system running across every shop-floor role — from tyre building
+      through to final inspection.</p>
+    <div class="meta-row">
+      <span><strong>Role</strong> — Project Lead</span>
+      <span><strong>Team</strong> — External development team + shop-floor stakeholders</span>
+      <span><strong>Outcome</strong> — Reduced manual reconciliation effort and error rate</span>
+    </div>
+  </header>
+
+  <div class="trace-rule"></div>
+
+  <!-- ================= PHASES: Planning → Go-Live ================= -->
+  <section class="module" id="phases">
+    <div class="module-head">
+      <span class="tag">01</span>
+      <div>
+        <h2>Project Phases</h2>
+        <p class="sub">Planning through to go-live — edit the dates and descriptions below to match your actual timeline.</p>
+      </div>
+    </div>
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-num">1</div>
+        <div class="phase-body">
+          <span class="when">Phase 1 — Planning &amp; Discovery</span>
+          <h3>Scoping the traceability gap</h3>
+          <p>[Add detail: stakeholder interviews on the shop floor, mapping the existing manual
+            reconciliation process, and defining what "full production traceability" needed to mean
+            for tyre building through final inspection.]</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">2</div>
+        <div class="phase-body">
+          <span class="when">Phase 2 — Design &amp; Prototyping</span>
+          <h3>Designing the barcode workflow</h3>
+          <p>[Add detail: how the barcode scanning flow was designed for each shop-floor role,
+            wireframes/mockups reviewed with the external dev team, and how the data model was
+            agreed on.]</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">3</div>
+        <div class="phase-body">
+          <span class="when">Phase 3 — Development &amp; Integration</span>
+          <h3>Building and integrating with existing systems</h3>
+          <p>[Add detail: sprints with the external development team, integration points with
+            existing shop-floor and enterprise systems, and how progress was tracked.]</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">4</div>
+        <div class="phase-body">
+          <span class="when">Phase 4 — Testing &amp; Pilot</span>
+          <h3>Piloting on the shop floor</h3>
+          <p>[Add detail: which line or role the pilot ran on first, what was validated, and how
+            feedback from shop-floor users shaped the final rollout plan.]</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">5</div>
+        <div class="phase-body">
+          <span class="when">Phase 5 — Go-Live &amp; Rollout</span>
+          <h3>Rolling out across every shop-floor role</h3>
+          <p>[Add detail: rollout sequence across roles/lines, training delivered, and how adoption
+            was monitored in the first weeks post go-live.]</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <!-- ================= MOCKUPS ================= -->
+  <section class="module" id="mockups">
+    <div class="module-head">
+      <span class="tag">02</span>
+      <div>
+        <h2>System Mockups</h2>
+        <p class="sub">Screens and design mockups from across the project — replace the image paths below with your own files.</p>
+      </div>
+    </div>
+    <div class="gallery" data-gallery>
+      <div class="gallery-track">
+        <img src="autobridge-2w-mockup-1.jpg" alt="AutoBridge 2W barcode scan screen mockup">
+        <img src="autobridge-2w-mockup-2.jpg" alt="AutoBridge 2W shop-floor dashboard mockup">
+        <img src="autobridge-2w-mockup-3.jpg" alt="AutoBridge 2W traceability report mockup">
+      </div>
+      <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+      <button class="gallery-nav next" aria-label="Next image">›</button>
+      <div class="gallery-dots"></div>
+    </div>
+    <p class="gallery-caption">→ Upload your mockup images to the repo and update the file names above (e.g. "autobridge-2w-mockup-1.jpg") to match.</p>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <!-- ================= JOURNEY ================= -->
+  <section class="module" id="journey">
+    <div class="module-head">
+      <span class="tag">03</span>
+      <div>
+        <h2>The Journey</h2>
+        <p class="sub">The story of how the project actually unfolded, in your own words.</p>
+      </div>
+    </div>
+    <div class="journey-list">
+      <div class="journey-item">
+        <span class="icon">1</span>
+        <p>[Add: what triggered this project — was it a recurring reconciliation problem, an
+          audit finding, or a strategic push toward full traceability?]</p>
+      </div>
+      <div class="journey-item">
+        <span class="icon">2</span>
+        <p>[Add: a moment early on that shaped the direction of the project — a stakeholder
+          conversation, a constraint you discovered, a decision you had to make.]</p>
+      </div>
+      <div class="journey-item">
+        <span class="icon">3</span>
+        <p>[Add: how the project evolved as it moved from pilot to full rollout — what changed
+          along the way.]</p>
+      </div>
+      <div class="journey-item">
+        <span class="icon">4</span>
+        <p>[Add: what it felt like at go-live, and how the shop floor responded once the system
+          was live.]</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <!-- ================= CHALLENGES & MITIGATION ================= -->
+  <section class="module" id="challenges">
+    <div class="module-head">
+      <span class="tag">04</span>
+      <div>
+        <h2>Challenges &amp; Mitigation</h2>
+        <p class="sub">What went wrong along the way, and how it was handled.</p>
+      </div>
+    </div>
+    <div class="cm-grid">
+      <div class="cm-row">
+        <div class="challenge">
+          <span class="label">Challenge</span>
+          <p>[e.g. Shop-floor resistance to a new scanning step in an already fast-paced
+            production line.]</p>
+        </div>
+        <div class="mitigation">
+          <span class="label">Mitigation</span>
+          <p>[e.g. Ran a small pilot with the most engaged team first, gathered feedback, and
+            used their results to build buy-in before wider rollout.]</p>
+        </div>
+      </div>
+      <div class="cm-row">
+        <div class="challenge">
+          <span class="label">Challenge</span>
+          <p>[e.g. Integration delays with the external development team due to unclear
+            data-ownership boundaries.]</p>
+        </div>
+        <div class="mitigation">
+          <span class="label">Mitigation</span>
+          <p>[e.g. Set up a weekly technical sync and a shared RACI to clarify ownership across
+            teams.]</p>
+        </div>
+      </div>
+      <div class="cm-row">
+        <div class="challenge">
+          <span class="label">Challenge</span>
+          <p>[e.g. Data quality issues surfaced only once real barcode volumes hit the system.]</p>
+        </div>
+        <div class="mitigation">
+          <span class="label">Mitigation</span>
+          <p>[e.g. Added validation rules at the point of scan rather than relying on downstream
+            cleanup.]</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <!-- ================= LEARNINGS ================= -->
+  <section class="module" id="learnings">
+    <div class="module-head">
+      <span class="tag">05</span>
+      <div>
+        <h2>Learnings</h2>
+        <p class="sub">What this project taught you as a PM.</p>
+      </div>
+    </div>
+    <div class="learn-grid">
+      <div class="learn-card">
+        <span class="quote-mark">"</span>
+        <p>[Add a learning — e.g. how early shop-floor involvement changes adoption outcomes.]</p>
+      </div>
+      <div class="learn-card">
+        <span class="quote-mark">"</span>
+        <p>[Add a learning — e.g. what you'd do differently in scoping the pilot phase next time.]</p>
+      </div>
+      <div class="learn-card">
+        <span class="quote-mark">"</span>
+        <p>[Add a learning — e.g. how you'd structure stakeholder communication differently.]</p>
+      </div>
+      <div class="learn-card">
+        <span class="quote-mark">"</span>
+        <p>[Add a learning — e.g. a technical or process insight that now shapes how you scope
+          similar projects.]</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="index.html">← Back to portfolio</a>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.gallery[data-gallery]').forEach(function (gallery) {
+      var track = gallery.querySelector('.gallery-track');
+      var slides = Array.prototype.slice.call(track.children);
+      var dotsWrap = gallery.querySelector('.gallery-dots');
+      var index = 0;
+
+      if (slides.length <= 1) { gallery.classList.add('single'); }
+
+      slides.forEach(function (_, i) {
+        var dot = document.createElement('button');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Go to image ' + (i + 1));
+        dot.addEventListener('click', function () { go(i); });
+        dotsWrap.appendChild(dot);
+      });
+
+      function go(i) {
+        index = (i + slides.length) % slides.length;
+        track.style.transform = 'translateX(-' + (index * 100) + '%)';
+        dotsWrap.querySelectorAll('.dot').forEach(function (d, di) {
+          d.classList.toggle('active', di === index);
+        });
+      }
+
+      var prevBtn = gallery.querySelector('.prev');
+      var nextBtn = gallery.querySelector('.next');
+      if (prevBtn) prevBtn.addEventListener('click', function () { go(index - 1); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { go(index + 1); });
+    });
+  </script>
+
+</body>
+</html>
