@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoBridge 2W — Project Journey | Dilan Jude Trowell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12161A;
+    --bg-panel: #181D22;
+    --line: #2A3138;
+    --ink: #E9EAE6;
+    --ink-dim: #9AA3AB;
+    --steel: #5B8FB0;
+    --signal: #E0A458;
+    --ok: #7FA88C;
+    --radius: 2px;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --display: 'Oswald', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  a{color:var(--steel);}
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--signal);
+    outline-offset:3px;
+  }
+  .trace-rule{
+    height:14px;
+    width:100%;
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--ink) 0px, var(--ink) 2px,
+      transparent 2px, transparent 5px,
+      var(--ink) 5px, var(--ink) 8px,
+      transparent 8px, transparent 11px,
+      var(--ink) 11px, var(--ink) 13px,
+      transparent 13px, transparent 20px
+    );
+    opacity:0.15;
+  }
+  .statusbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 6vw;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--ink-dim);
+    border-bottom:1px solid var(--line);
+    text-transform:uppercase;
+  }
+  .statusbar .dot-live{
+    display:inline-block;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--signal);
+    margin-right:8px;
+    box-shadow:0 0 6px var(--signal);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;}
+    50%{opacity:0.35;}
+  }
+  main{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8vh 6vw;
+  }
+  .construction{
+    max-width:640px;
+    text-align:center;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--steel);
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin:0 0 18px;
+  }
+  h1{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(2rem, 5vw, 3.2rem);
+    line-height:1.05;
+    margin:0 0 20px;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+  }
+  .accent{ color:var(--signal); }
+  p.lede{
+    font-size:clamp(1rem, 1.4vw, 1.15rem);
+    color:var(--ink-dim);
+    margin:0 0 36px;
+  }
+  .progress-frame{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:4px;
+    margin:0 0 40px;
+    background:var(--bg-panel);
+  }
+  .progress-track{
+    height:8px;
+    width:100%;
+    background:#0D1013;
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    width:55%;
+    background:repeating-linear-gradient(
+      45deg,
+      var(--signal) 0px, var(--signal) 10px,
+      #C48A3F 10px, #C48A3F 20px
+    );
+  }
+  .progress-label{
+    display:flex;
+    justify-content:space-between;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    padding:8px 4px 2px;
+  }
+  .hero-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    justify-content:center;
+  }
+  .btn{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.04em;
+    text-decoration:none;
+    padding:11px 20px;
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    color:var(--ink);
+    transition:border-color 0.15s ease, color 0.15s ease;
+    background:transparent;
+    cursor:pointer;
+  }
+  .btn:hover{border-color:var(--steel); color:var(--steel);}
+  .btn.primary{
+    background:var(--steel);
+    color:#0F1216;
+    border-color:var(--steel);
+    font-weight:500;
+  }
+  .btn.primary:hover{background:var(--ink); border-color:var(--ink); color:#0F1216;}
+  footer{
+    padding:5vh 6vw;
+    border-top:1px solid var(--line);
+    text-align:center;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--ink-dim);
+    opacity:0.6;
+  }
+</style>
+</head>
+<body>
+
+  <div class="statusbar">
+    <span><span class="dot-live"></span>Page under construction</span>
+    <span>Colombo, Sri Lanka</span>
+  </div>
+
+  <div class="trace-rule"></div>
+
+  <main>
+    <div class="construction">
+      <p class="eyebrow">Project Journey · AutoBridge 2W</p>
+      <h1>This page is<br><span class="accent">under construction</span></h1>
+      <p class="lede">The full write-up for the AutoBridge 2W Barcode Management System — the
+        build process, rollout, and results — is being put together. Check back soon, or
+        reach out directly for the details in the meantime.</p>
+
+      <div class="progress-frame">
+        <div class="progress-track">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="progress-label">
+          <span>Drafting case study</span>
+          <span>In progress</span>
+        </div>
+      </div>
+
+      <div class="hero-links">
+        <a class="btn primary" href="index.html">← Back to portfolio</a>
+        <a class="btn" href="mailto:djtrowell@gmail.com">Email me</a>
+      </div>
+    </div>
+  </main>
+
+  <div class="trace-rule"></div>
+
+  <footer>
+    Dilan Jude Trowell — Project Manager, Digital Transformation
+  </footer>
+
+</body>
+</html>
