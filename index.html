@@ -41,8 +41,6 @@
     outline:2px solid var(--signal);
     outline-offset:3px;
   }
-
-  /* barcode-pattern divider — signature element, referencing traceability/barcode systems work */
   .trace-rule{
     height:14px;
     width:100%;
@@ -57,8 +55,6 @@
     );
     opacity:0.15;
   }
-
-  /* ---------- status bar ---------- */
   .statusbar{
     display:flex;
     justify-content:space-between;
@@ -79,8 +75,6 @@
     margin-right:8px;
     box-shadow:0 0 6px var(--ok);
   }
-
-  /* ---------- hero ---------- */
   .hero{
     padding:9vh 6vw 7vh;
     max-width:1100px;
@@ -134,8 +128,6 @@
     font-weight:500;
   }
   .btn.primary:hover{background:var(--ink); border-color:var(--ink); color:#0F1216;}
-
-  /* ---------- stat strip ---------- */
   .stats{
     display:grid;
     grid-template-columns:repeat(4, 1fr);
@@ -162,8 +154,6 @@
     margin-top:6px;
     display:block;
   }
-
-  /* ---------- section shell ---------- */
   section.module{
     padding:8vh 6vw;
     max-width:1100px;
@@ -195,8 +185,6 @@
     font-size:12px;
     color:var(--ink-dim);
   }
-
-  /* ---------- project cards ---------- */
   .grid{
     display:grid;
     grid-template-columns:repeat(2, 1fr);
@@ -247,8 +235,6 @@
     letter-spacing:0.02em;
   }
   .card-link:hover{ color:var(--signal); text-decoration:underline; }
-
-  /* ---------- store buttons (Play Store / App Store links) ---------- */
   .store-links{
     display:flex;
     gap:10px;
@@ -273,8 +259,6 @@
   }
   .store-btn:hover{ border-color:var(--signal); color:var(--signal); }
   .store-btn svg{ width:14px; height:14px; flex:none; fill:currentColor; }
-
-  /* ---------- image gallery / slideshow (per project) ---------- */
   .gallery{
     position:relative;
     margin:0 0 16px;
@@ -332,14 +316,11 @@
   }
   .gallery-dots .dot.active{ background:var(--signal); }
   .gallery.single .gallery-nav, .gallery.single .gallery-dots{ display:none; }
-
   @media (max-width:760px){
     .grid{grid-template-columns:1fr;}
     .stats{grid-template-columns:repeat(2, 1fr);}
     .stat:nth-child(2){border-right:none;}
   }
-
-  /* ---------- timeline (real sequence, so numbering is meaningful here) ---------- */
   .timeline{border-left:1px solid var(--line); margin-left:6px;}
   .tl-item{
     position:relative;
@@ -376,8 +357,6 @@
     font-size:0.92rem;
     max-width:600px;
   }
-
-  /* ---------- education ---------- */
   .edu-list{ display:flex; flex-direction:column; gap:22px; }
   .edu-item{
     display:flex;
@@ -403,8 +382,6 @@
     color:var(--signal);
     white-space:nowrap;
   }
-
-  /* ---------- toolchips ---------- */
   .chips{display:flex; flex-wrap:wrap; gap:10px;}
   .chip{
     font-family:var(--mono);
@@ -414,7 +391,6 @@
     border-radius:var(--radius);
     color:var(--ink-dim);
   }
-
   footer{
     padding:7vh 6vw 8vh;
     border-top:1px solid var(--line);
@@ -479,8 +455,6 @@
     </div>
     <div class="grid">
       <div class="card">
-        <!-- EXAMPLE GALLERY: replace src="" paths with your own image files, or delete this
-             .gallery div entirely if you don't have photos for this project -->
         <div class="gallery" data-gallery>
           <div class="gallery-track">
             <img src="images/bi-platform-1.jpg" alt="Enterprise BI platform dashboard screenshot">
@@ -529,6 +503,7 @@
         <p>Directed full production traceability from tyre building through final inspection across
           shop-floor user roles, with an external development team.</p>
         <div class="impact">→ Reduced manual reconciliation effort and error rate</div>
+        <a class="card-link" href="autobridge-2w.html">View project journey ↗</a>
       </div>
       <div class="card">
         <h3>Digital Traceability (Factory-Wide)</h3>
@@ -566,7 +541,7 @@
     </div>
     <div class="grid">
       <div class="card">      
-        <div class="gallery single" data-gallery>
+        <div class="gallery" data-gallery>
           <div class="gallery-track">
             <img src="Dealer Connect_1.png" alt="CEAT Connect mobile app">
             <img src="Dealer Connect_2.png" alt="CEAT Connect mobile app">
@@ -580,7 +555,6 @@
         <span class="role">Project Lead, Cross Functional Team</span>
         <p>Delivered from concept to public launch on both the Google Play Store and Apple App Store,
           leading a cross-functional team.</p>
-        <!-- Replace the href="#" values below with your actual Play Store / App Store links -->
         <div class="store-links">
           <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.ceat.ceat_dealer_app&hl=en" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24"><path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.76-.84-1.35zm13.81-7.37L5.6 21.02l8.32-8.32 2.89 1.93v.5zm3.65-8.65L17.35 6.85l-2.89-1.93 3.29-1.85c.6-.34 1.32-.34 1.71.41zm0 15L17.35 17.15l-2.89 1.93 3.29 1.85c.6.34 1.32.34 1.71-.41z"/></svg>
