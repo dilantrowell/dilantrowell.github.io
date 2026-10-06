@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dilan Jude Trowell — Project Manager, Digital Transformation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
+<style>
+  :root{
+    --bg: #12161A;
+    --bg-panel: #181D22;
+    --line: #2A3138;
+    --ink: #E9EAE6;
+    --ink-dim: #9AA3AB;
+    --steel: #5B8FB0;
+    --signal: #E0A458;
+    --ok: #7FA88C;
+    --radius: 2px;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --display: 'Oswald', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation: none !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--steel);}
+  a:focus-visible, button:focus-visible, .gallery:focus-visible{
+    outline:2px solid var(--signal);
+    outline-offset:3px;
+  }
+
+  /* ---------- scroll progress ---------- */
+  .progress{
+    position:fixed; top:0; left:0; right:0;
+    height:2px; z-index:60;
+    background:var(--signal);
+    transform-origin:0 50%;
+    transform:scaleX(0);
+    box-shadow:0 0 10px rgba(224,164,88,.6);
+    pointer-events:none;
+  }
+
+  /* ---------- barcode rule (drifts with scroll) ---------- */
+  .trace-rule{
+    height:14px;
+    width:100%;
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--ink) 0px, var(--ink) 2px,
+      transparent 2px, transparent 5px,
+      var(--ink) 5px, var(--ink) 8px,
+      transparent 8px, transparent 11px,
+      var(--ink) 11px, var(--ink) 13px,
+      transparent 13px, transparent 20px
+    );
+    background-position-x: calc(var(--shift, 0) * 1px);
+    opacity:0.15;
+  }
+
+  .statusbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 6vw;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--ink-dim);
+    border-bottom:1px solid var(--line);
+    text-transform:uppercase;
+  }
+  .statusbar .dot-live{
+    display:inline-block;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--ok);
+    margin-right:8px;
+    box-shadow:0 0 6px var(--ok);
+    animation:live 2.4s ease-in-out infinite;
+  }
+  @keyframes live{ 0%,100%{opacity:1} 50%{opacity:.35} }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    padding:9vh 6vw 7vh;
+    max-width:1100px;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--steel);
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin:0 0 18px;
+  }
+  h1{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(2.4rem, 6vw, 4.6rem);
+    line-height:1.02;
+    margin:0 0 20px;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+  }
+  h1 .word{display:inline-block; white-space:nowrap;}
+  h1 .ch{
+    display:inline-block;
+    --k:0;
+    color:inherit;
+    color:color-mix(in srgb, var(--signal) calc(var(--k) * 100%), var(--ink));
+    transform:translateY(calc(var(--k) * -5px));
+    transition:opacity .18s ease, color .15s linear, transform .15s ease;
+  }
+  .js h1 .ch:not(.on){opacity:0;}
+
+  .hero p.thesis{
+    font-size:clamp(1.05rem, 1.6vw, 1.3rem);
+    color:var(--ink-dim);
+    max-width:640px;
+    margin:0 0 36px;
+  }
+  .js .hero p.thesis, .js .hero .hero-links{
+    opacity:0; transform:translateY(10px);
+    transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1);
+  }
+  .js .hero .hero-links{transition-delay:.12s;}
+  .js .hero.ready p.thesis, .js .hero.ready .hero-links{opacity:1; transform:none;}
+
+  /* the barcode scan beam */
+  .scan{
+    position:absolute; top:0; bottom:0; left:0;
+    width:2px;
+    background:var(--signal);
+    box-shadow:0 0 14px 2px rgba(224,164,88,.55), -70px 0 70px -12px rgba(224,164,88,.14);
+    opacity:0;
+    pointer-events:none;
+    z-index:2;
+    transition:opacity .4s ease;
+    will-change:transform;
+  }
+  .scan.active{opacity:1;}
+  .scan.hover{opacity:.45; width:1px; box-shadow:none;}
+
+  .hero-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+  }
+  .btn{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.04em;
+    text-decoration:none;
+    padding:11px 20px;
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    color:var(--ink);
+    transition:border-color 0.15s ease, color 0.15s ease, transform .25s cubic-bezier(.2,.7,.2,1), background .15s ease;
+    background:transparent;
+    cursor:pointer;
+  }
+  .btn:hover{border-color:var(--steel); color:var(--steel);}
+  .btn.primary{
+    background:var(--steel);
+    color:#0F1216;
+    border-color:var(--steel);
+    font-weight:500;
+  }
+  .btn.primary:hover{background:var(--ink); border-color:var(--ink); color:#0F1216;}
+
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .stat{
+    padding:28px 6vw;
+    border-right:1px solid var(--line);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .num{
+    font-family:var(--display);
+    font-size:clamp(1.6rem, 3vw, 2.2rem);
+    color:var(--signal);
+    display:block;
+    font-variant-numeric:tabular-nums;
+  }
+  .stat .label{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    margin-top:6px;
+    display:block;
+  }
+  section.module{
+    padding:8vh 6vw;
+    max-width:1100px;
+  }
+  .module-head{
+    display:flex;
+    align-items:baseline;
+    gap:16px;
+    margin-bottom:36px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:18px;
+  }
+  .module-head .tag{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--signal);
+    letter-spacing:0.08em;
+  }
+  .module-head h2{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:clamp(1.3rem, 2.2vw, 1.8rem);
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .module-head .meta{
+    margin-left:auto;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--ink-dim);
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+
+  /* ---------- cards with cursor spotlight ---------- */
+  .card{
+    position:relative;
+    background:var(--bg-panel);
+    padding:28px 30px;
+    transition:box-shadow .25s ease;
+  }
+  .card > *{position:relative;}
+  .card::before{
+    content:'';
+    position:absolute; inset:0;
+    background:radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(224,164,88,.10), transparent 62%);
+    opacity:0;
+    transition:opacity .3s ease;
+    pointer-events:none;
+  }
+  .card:hover::before{opacity:1;}
+  .card:hover{box-shadow:inset 0 0 0 1px rgba(224,164,88,.28);}
+  .card h3{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:1.05rem;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .card .role{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--steel);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    margin-bottom:14px;
+    display:block;
+  }
+  .card p{
+    margin:0;
+    color:var(--ink-dim);
+    font-size:0.94rem;
+  }
+  .card .impact{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px dashed var(--line);
+    font-size:0.86rem;
+    color:var(--ok);
+    font-family:var(--mono);
+  }
+  .card .impact.wip{color:var(--signal);}
+  .pulse{
+    display:inline-block;
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--signal);
+    margin-right:8px;
+    vertical-align:middle;
+    box-shadow:0 0 6px var(--signal);
+    animation:live 2s ease-in-out infinite;
+  }
+  .card-link{
+    display:inline-block;
+    margin-top:12px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--steel);
+    text-decoration:none;
+    letter-spacing:0.02em;
+  }
+  .card-link:hover{ color:var(--signal); text-decoration:underline; }
+  .store-links{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px dashed var(--line);
+    flex-wrap:wrap;
+  }
+  .store-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.02em;
+    text-decoration:none;
+    color:var(--ink);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:8px 14px;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .store-btn:hover{ border-color:var(--signal); color:var(--signal); }
+  .store-btn svg{ width:14px; height:14px; flex:none; fill:currentColor; }
+
+  /* ---------- galleries: drag, swipe, click to enlarge ---------- */
+  .gallery{
+    position:relative;
+    margin:0 0 16px;
+    border:1px solid var(--line);
+    background:#0D1013;
+    overflow:hidden;
+    border-radius:var(--radius);
+    touch-action:pan-y;
+  }
+  .gallery-track{
+    display:flex;
+    transition:transform 0.45s cubic-bezier(.2,.7,.2,1);
+  }
+  .gallery-track img{
+    width:100%;
+    flex:0 0 100%;
+    display:block;
+    aspect-ratio:16/10;
+    object-fit:cover;
+    cursor:zoom-in;
+    user-select:none;
+    -webkit-user-drag:none;
+    transition:transform .6s cubic-bezier(.2,.7,.2,1);
+  }
+  .gallery:hover .gallery-track img{transform:scale(1.025);}
+  .gallery-nav{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(18,22,26,0.7);
+    border:1px solid var(--line);
+    color:var(--ink);
+    width:32px; height:32px;
+    border-radius:50%;
+    cursor:pointer;
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:2;
+  }
+  .gallery-nav:hover{border-color:var(--steel); color:var(--steel);}
+  .gallery-nav.prev{left:10px;}
+  .gallery-nav.next{right:10px;}
+  .gallery-dots{
+    position:absolute;
+    bottom:10px;
+    left:0; right:0;
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    z-index:2;
+  }
+  .gallery-dots .dot{
+    width:6px; height:6px;
+    border-radius:50%;
+    border:none;
+    background:rgba(233,234,230,0.35);
+    cursor:pointer;
+    padding:0;
+    transition:width .25s ease, background .25s ease;
+  }
+  .gallery-dots .dot.active{ background:var(--signal); width:16px; border-radius:3px; }
+  .gallery-count{
+    position:absolute; top:10px; right:10px;
+    font-family:var(--mono); font-size:11px;
+    color:var(--ink);
+    background:rgba(18,22,26,.7);
+    border:1px solid var(--line);
+    padding:2px 8px;
+    border-radius:var(--radius);
+    z-index:2;
+    pointer-events:none;
+  }
+  .gallery.single .gallery-nav, .gallery.single .gallery-dots, .gallery.single .gallery-count{ display:none; }
+
+  /* ---------- lightbox ---------- */
+  .lightbox{
+    position:fixed; inset:0; z-index:100;
+    background:rgba(10,12,14,.94);
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:14px; padding:24px;
+    animation:lbIn .25s ease;
+  }
+  .lightbox[hidden]{display:none;}
+  @keyframes lbIn{ from{opacity:0} to{opacity:1} }
+  .lightbox img{
+    max-width:92vw; max-height:78vh;
+    border:1px solid var(--line);
+    background:#0D1013;
+    animation:lbImg .35s cubic-bezier(.2,.7,.2,1);
+  }
+  @keyframes lbImg{ from{opacity:0; transform:scale(.97)} to{opacity:1; transform:none} }
+  .lb-cap{
+    margin:0;
+    font-family:var(--mono); font-size:12.5px;
+    color:var(--ink-dim);
+    text-align:center;
+  }
+  .lb-btn{
+    position:absolute;
+    background:rgba(18,22,26,.8);
+    border:1px solid var(--line);
+    color:var(--ink);
+    width:42px; height:42px;
+    border-radius:50%;
+    font-size:20px; line-height:1;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .lb-btn:hover{border-color:var(--signal); color:var(--signal);}
+  .lb-close{top:20px; right:20px;}
+  .lb-prev{left:20px; top:50%; transform:translateY(-50%);}
+  .lb-next{right:20px; top:50%; transform:translateY(-50%);}
+  .lightbox.single .lb-prev, .lightbox.single .lb-next{display:none;}
+
+  @media (max-width:760px){
+    .grid{grid-template-columns:1fr;}
+    .stats{grid-template-columns:repeat(2, 1fr);}
+    .stat:nth-child(2){border-right:none;}
+  }
+
+  /* ---------- timeline that fills as you scroll ---------- */
+  .timeline{position:relative; border-left:1px solid var(--line); margin-left:6px;}
+  .timeline::after{
+    content:'';
+    position:absolute; left:-1px; top:0;
+    width:1px;
+    height:var(--p, 0px);
+    background:var(--signal);
+    box-shadow:0 0 8px rgba(224,164,88,.6);
+    pointer-events:none;
+  }
+  .tl-item{
+    position:relative;
+    padding:0 0 34px 32px;
+  }
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{
+    content:'';
+    position:absolute;
+    left:-5.5px; top:4px;
+    width:10px; height:10px;
+    background:var(--bg);
+    border:2px solid var(--signal);
+    border-radius:50%;
+    transition:background .35s ease, box-shadow .35s ease;
+  }
+  .tl-item.passed::before{background:var(--signal); box-shadow:0 0 8px rgba(224,164,88,.7);}
+  .tl-item .when{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    display:block;
+    margin-bottom:4px;
+  }
+  .tl-item h4{
+    margin:0 0 4px;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:1rem;
+  }
+  .tl-item p{
+    margin:0;
+    color:var(--ink-dim);
+    font-size:0.92rem;
+    max-width:600px;
+  }
+  .edu-list{ display:flex; flex-direction:column; gap:22px; }
+  .edu-item{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding-bottom:22px;
+    border-bottom:1px dashed var(--line);
+  }
+  .edu-item:last-child{ border-bottom:none; padding-bottom:0; }
+  .edu-item h4{
+    margin:0 0 4px;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:1rem;
+  }
+  .edu-item .school{
+    color:var(--ink-dim);
+    font-size:0.92rem;
+  }
+  .edu-item .when{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--signal);
+    white-space:nowrap;
+  }
+  .chips{display:flex; flex-wrap:wrap; gap:10px;}
+  .chip{
+    font-family:var(--mono);
+    font-size:12px;
+    padding:7px 13px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    color:var(--ink-dim);
+    cursor:default;
+  }
+  .chip:hover{
+    border-color:var(--signal);
+    color:var(--signal);
+    transform:translateY(-3px);
+    transition:transform .2s cubic-bezier(.2,.7,.2,1), color .15s ease, border-color .15s ease;
+  }
+  footer{
+    padding:7vh 6vw 8vh;
+    border-top:1px solid var(--line);
+    max-width:1100px;
+  }
+  footer h2{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:clamp(1.6rem, 3vw, 2.4rem);
+    margin:0 0 20px;
+  }
+  footer .contact-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    font-family:var(--mono);
+    font-size:13.5px;
+    color:var(--ink-dim);
+  }
+  footer .contact-row a{color:var(--ink);}
+  .fine{
+    margin-top:40px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--ink-dim);
+    opacity:0.6;
+  }
+
+  /* ---------- section rail ---------- */
+  .rail{
+    position:fixed; right:22px; top:50%;
+    transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:6px;
+    z-index:50;
+  }
+  .rail-dot{
+    position:relative;
+    width:22px; height:22px;
+    display:flex; align-items:center; justify-content:center;
+    text-decoration:none;
+  }
+  .rail-dot::before{
+    content:'';
+    width:7px; height:7px;
+    border-radius:50%;
+    border:1px solid var(--ink-dim);
+    background:transparent;
+    transition:all .25s cubic-bezier(.2,.7,.2,1);
+  }
+  .rail-dot.active::before{
+    width:11px; height:11px;
+    background:var(--signal);
+    border-color:var(--signal);
+    box-shadow:0 0 10px rgba(224,164,88,.6);
+  }
+  .rail-label{
+    position:absolute; right:30px; top:50%;
+    transform:translate(6px,-50%);
+    font-family:var(--mono); font-size:11.5px;
+    white-space:nowrap;
+    color:var(--ink);
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    padding:4px 10px;
+    border-radius:var(--radius);
+    opacity:0; pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .rail-dot:hover .rail-label, .rail-dot:focus-visible .rail-label{opacity:1; transform:translate(0,-50%);}
+  @media (max-width:1000px){ .rail{display:none;} }
+
+  /* ---------- scroll reveal (only when JS is on) ---------- */
+  .js .rv{
+    opacity:0; transform:translateY(16px);
+    transition:opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1);
+  }
+  .js .rv.in{opacity:1; transform:none;}
+  .js .chip.rv.in:hover{transform:translateY(-3px);}
+</style>
+</head>
+<body>
+
+  <div class="progress" aria-hidden="true"></div>
+
+  <div class="statusbar">
+    <span><span class="dot-live"></span>Available for new roles</span>
+    <span>Colombo, Sri Lanka</span>
+  </div>
+
+  <header class="hero">
+    <p class="eyebrow">Project Manager · Digital Transformation Projects</p>
+    <h1>Dilan Jude&nbsp;Trowell</h1>
+    <p class="thesis">Results-driven Project Manager with 3+ years of experience leading digital transformation across manufacturing, enterprise systems (SAP), mobile applications, analytics, and workforce enablement. Proven ability to deliver solutions that improve operational efficiency, traceability, and data-driven decision-making, including a Gold Award-winning (NCQP 2025) employee digital-learning transformation. Skilled in Agile and traditional project management, stakeholder management, and risk mitigation.</p>
+    <div class="hero-links">
+      <a class="btn primary" href="mailto:djtrowell@gmail.com">Email me</a>
+      <a class="btn" href="https://www.linkedin.com/in/dilan-trowell-433160132/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="tel:+94719645401">+94 71 964 5401</a>
+    </div>
+    <div class="scan" aria-hidden="true"></div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><span class="num">3+</span><span class="label">Years in PM &amp; BA roles</span></div>
+    <div class="stat"><span class="num">12</span><span class="label">Digital transformation projects led</span></div>
+    <div class="stat"><span class="num">20</span><span class="label">Cross-functional BI team, 6 depts</span></div>
+    <div class="stat"><span class="num">2025</span><span class="label">NCQP Gold Award winner</span></div>
+  </div>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="enterprise">
+    <div class="module-head">
+      <span class="tag">01</span>
+      <h2>Enterprise Systems &amp; Analytics</h2>
+      <span class="meta">CEAT Kelani International Tyres</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="BD Project_1.png" alt="Enterprise BI platform dashboard screenshot">            
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>Enterprise Data Warehousing &amp; BI Platform</h3>
+        <span class="role">Project Lead</span>
+        <p>Directed an external development team to build a data warehouse and BI platform integrating
+          SAP S/4HANA with Sales and Marketing systems, automating visualization and reporting.</p>
+        <div class="impact">→ Manual reporting replaced with automated, integrated dashboards</div>
+        <a class="card-link" href="journey/bi-platform.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="AutoBridge TBR_1.jpg" alt="Project Go Live">
+            <img src="AutoBridge TBR_2.jpg" alt="Project Go Live">
+            <img src="AutoBridge TBR_3.jpg" alt="Project Go Live">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>AutoBridge OT–IT Integration</h3>
+        <span class="role">Project Lead</span>
+        <p>Took a pilot from proof of concept to a full production system, unifying shop-floor and
+          enterprise data into a single source feeding real-time KPI dashboards.</p>
+        <div class="impact">→ Pilot scaled to full production, external dev team</div>
+        <a class="card-link" href="journey/autobridge-ot-it.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="AutoBridge 2W_1.jpeg" alt="AutoBridge 2W Go Live">
+            <img src="AutoBridge 2W_2.jpeg" alt="AutoBridge 2W Go Live">
+            <img src="AutoBridge 2W_3.png" alt="AutoBridge 2W Go Live">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>AutoBridge 2W Barcode Management System</h3>
+        <span class="role">Project Lead</span>
+        <p>Directed full production traceability from tyre building through final inspection across
+          shop-floor user roles, with an external development team.</p>
+        <div class="impact">→ Reduced manual reconciliation effort and error rate</div>
+        <a class="card-link" href="journey/autobridge-2w.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <h3>Digital Traceability (Factory-Wide)</h3>
+        <span class="role">Project Lead — In Progress</span>
+        <p>Leading end-to-end manufacturing traceability across the entire factory: material genealogy,
+          production traceability, real-time inventory visibility, and RMS-to-dispatch integration.</p>
+        <div class="impact">→ In progress</div>
+        <a class="card-link" href="journey/digital-traceability.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="Laboratory Test Data_1.jpeg" alt="AutoBridge 2W Go Live">
+            <img src="Laboratory Test Data_2.jpeg" alt="AutoBridge 2W Go Live">
+            <img src="Laboratory Test Data_3.jpeg" alt="AutoBridge 2W Go Live">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>Laboratory Test Data Management System</h3>
+        <span class="role">Project Lead</span>
+        <p>Led the successful end-to-end delivery and go-live of the project, coordinating cross-functional teams to ensure timely execution, seamless collaboration, and successful implementation.</p>
+        <div class="impact">→ Manual reporting replaced with automated, integrated dashboards for real-time decision making</div>
+        <a class="card-link" href="journey/lab-test-data.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <!-- EXAMPLE GALLERY: replace src="" paths below with your own FIFO project screenshots -->
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="FIFO_RM_FG.png" alt="FIFO System for RM and FG Stores screenshot">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>FIFO System for RM &amp; FG Stores</h3>
+        <span class="role">Project Lead</span>
+        <p>Drove a FIFO improvement program across Raw Material and Finished Goods stores through
+          systematic inventory monitoring, batch data correction, and strengthened material receiving
+          controls.</p>
+        <div class="impact">→ Compliance raised from 80% to 95% within two months; 100% FIFO implementation achieved on all raw materials except one</div>
+        <a class="card-link" href="journey/fifo-system.html">View project journey ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="customer">
+    <div class="module-head">
+      <span class="tag">02</span>
+      <h2>Mobile &amp; Customer-Facing Products</h2>
+      <span class="meta">CEAT Kelani International Tyres</span>
+    </div>
+    <div class="grid">
+      <div class="card">      
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="Dealer Connect_1.png" alt="CEAT Connect mobile app">
+            <img src="Dealer Connect_2.png" alt="CEAT Connect mobile app">
+            <img src="Dealer Connect_3.png" alt="CEAT Connect mobile app">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>CEAT Connect Mobile App</h3>
+        <span class="role">Project Co-Lead, Cross Functional Team</span>
+        <p>Delivered from concept to public launch on both the Google Play Store and Apple App Store,
+          leading a cross-functional team.</p>
+        <a class="card-link" href="journey/ceat-connect.html">View project journey ↗</a>
+        <div class="store-links">
+          <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.ceat.ceat_dealer_app&hl=en" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.76-.84-1.35zm13.81-7.37L5.6 21.02l8.32-8.32 2.89 1.93v.5zm3.65-8.65L17.35 6.85l-2.89-1.93 3.29-1.85c.6-.34 1.32-.34 1.71.41zm0 15L17.35 17.15l-2.89 1.93 3.29 1.85c.6.34 1.32.34 1.71-.41z"/></svg>
+            Google Play
+          </a>
+          <a class="store-btn" href="https://apps.apple.com/lk/app/ceat-connect/id6756008798" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8.94-.19 1.94-.87 3.14-.87 1.6 0 2.83.65 3.66 1.78-2.68 1.6-2.24 5.02.42 6.02-.65 1.5-1.49 2.98-2.3 4.24zm-3.4-13.65c-.09-2.1 1.58-3.85 3.53-4.13.28 2.06-1.9 4.31-3.53 4.13z"/></svg>
+            App Store
+          </a>
+        </div>
+      </div>
+      <div class="card">
+        <!-- EXAMPLE GALLERY: replace src="" paths below with your own CRM Automation Project screenshots -->
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="CRM_1.png" alt="CRM Automation Project screenshot">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>CRM Automation Project</h3>
+        <span class="role">Project Lead</span>
+        <p>Led the successful end-to-end delivery and go-live of the project, coordinating cross-functional
+          teams to ensure timely execution, seamless collaboration, and a successful iOS launch and
+          rollout program to dealer points.</p>
+        <div class="impact">→ Rolled out across dealer points nationwide</div>
+        <a class="card-link" href="journey/crm-automation.html">View project journey ↗</a>
+        <div class="store-links">
+          <!-- FIXED: the store URLs were sitting inside the SVG path and href="#". They now live in the href, with the same icons as the other cards. -->
+          <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.ceat.CEAT_SL&hl=en" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.76-.84-1.35zm13.81-7.37L5.6 21.02l8.32-8.32 2.89 1.93v.5zm3.65-8.65L17.35 6.85l-2.89-1.93 3.29-1.85c.6-.34 1.32-.34 1.71.41zm0 15L17.35 17.15l-2.89 1.93 3.29 1.85c.6.34 1.32.34 1.71-.41z"/></svg>
+            Google Play
+          </a>
+          <a class="store-btn" href="https://apps.apple.com/lk/app/ceat-sl/id6738712521" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8.94-.19 1.94-.87 3.14-.87 1.6 0 2.83.65 3.66 1.78-2.68 1.6-2.24 5.02.42 6.02-.65 1.5-1.49 2.98-2.3 4.24zm-3.4-13.65c-.09-2.1 1.58-3.85 3.53-4.13.28 2.06-1.9 4.31-3.53 4.13z"/></svg>
+            App Store
+          </a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Dealer &amp; Customer Digitization</h3>
+        <span class="role">Project Lead — In Progress</span>
+        <p>Spearheading a mobile-enabled dealer and customer service workflow with automated
+          notifications, digital image validation, and integrated pickup logistics — a first-of-its-kind
+          capability in the local tyre market.</p>
+        <div class="impact">→ In progress [Expected Completion Date: 2nd Week of September 2026] </div>
+        <a class="card-link" href="journey/dealer-customer-digitization.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <h3>Vendor Management Portal</h3>
+        <span class="role">Project Lead — In Progress</span>
+        <p>Drafting in progress.</p>
+        <div class="impact">→ In progress [Expected Completion Date: End of September 2026]</div>
+        <a class="card-link" href="journey/vendor-portal.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <h3>Digital Invoice Reconciliation &amp; Document Management</h3>
+        <span class="role">Project Lead — In Progress</span>
+        <p>Transforming invoice processing through OCR-based digitization, automated SAP reconciliation,
+          and end-to-end traceability from invoice receipt to secure document storage.</p>
+        <div class="impact">→ In progress [Expected Completion Date: 1st Week of January 2027]</div>
+        <a class="card-link" href="journey/invoice-reconciliation.html">View project journey ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="unwir">
+    <div class="module-head">
+      <span class="tag">02.1</span>
+      <h2>Customer-Facing Products — External Engagement</h2>
+      <span class="meta">UnWir · Business Analyst (External Team)</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <!-- EXAMPLE GALLERY: replace src="" paths below with your own BumpedIn screenshots -->
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="bumpedIn_1.png" alt="BumpedIn mobile app screenshot">
+            <img src="bumpedIn_2.png" alt="BumpedIn mobile app screenshot">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>BumpedIn</h3>
+        <span class="role">Business Analyst, External Team (UnWir)</span>
+        <p>Worked as a Freelancer Business Analyst with UnWir, an external team, to deliver a
+          customer-facing mobile app for clients based in the USA and Australia for social interaction and dating purposes.</p>
+        <div class="impact">→ Live on the App Store and Google Play for clients in the USA &amp; Australia</div>
+        <a class="card-link" href="journey/bumpedin.html">View project journey ↗</a>
+        <div class="store-links">
+          <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.bumpedin&hl=en" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.76-.84-1.35zm13.81-7.37L5.6 21.02l8.32-8.32 2.89 1.93v.5zm3.65-8.65L17.35 6.85l-2.89-1.93 3.29-1.85c.6-.34 1.32-.34 1.71.41zm0 15L17.35 17.15l-2.89 1.93 3.29 1.85c.6.34 1.32.34 1.71-.41z"/></svg>
+            Google Play
+          </a>
+          <a class="store-btn" href="https://apps.apple.com/us/app/bumpedin/id6736833225" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8.94-.19 1.94-.87 3.14-.87 1.6 0 2.83.65 3.66 1.78-2.68 1.6-2.24 5.02.42 6.02-.65 1.5-1.49 2.98-2.3 4.24zm-3.4-13.65c-.09-2.1 1.58-3.85 3.53-4.13.28 2.06-1.9 4.31-3.53 4.13z"/></svg>
+            App Store
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="jigsaw">
+    <div class="module-head">
+      <span class="tag">02.2</span>
+      <h2>Customer-Facing Products — Client Delivery</h2>
+      <span class="meta">Jigsaw Ensemble (Pvt) Ltd</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>Hotel Reservation System</h3>
+        <span class="role">Business Analyst – Associate</span>
+        <p>Delivered a customer-facing hotel reservation system for a client, from requirements
+          gathering through to launch.</p>
+        <div class="impact">→ Client project delivered end-to-end</div>
+        <a class="card-link" href="journey/hotel-reservation.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <h3>Toyota Lanka Supplier Registration Portal</h3>
+        <span class="role">Business Analyst – Associate</span>
+        <p>Delivered a supplier-facing registration portal for Toyota Lanka, streamlining supplier
+          onboarding into a single digital workflow.</p>
+        <div class="impact">→ Client project delivered end-to-end</div>
+        <a class="card-link" href="journey/supplier-registration.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <!-- EXAMPLE GALLERY: replace src="" paths below with your own CSL Gem Certificate Portal screenshots -->
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="CSL Gem Certificate Portal_1.jpg" alt="CSL Gem Certificate Generation Portal screenshot">
+            <img src="CSL Gem Certificate Portal_2.jpg" alt="CSL Gem Certificate Generation Portal screenshot">
+            <img src="CSL Gem Certificate Portal_3.jpg" alt="CSL Gem Certificate Generation Portal screenshot">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>CSL Gem Certificate Generation Portal</h3>
+        <span class="role">Business Analyst – Associate</span>
+        <p>Delivered a customer-facing portal for generating gem certificates, digitizing a
+          previously manual certification workflow.</p>
+        <div class="impact">→ Client project delivered end-to-end</div>
+        <a class="card-link" href="journey/gem-certificate.html">View project journey ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="workforce">
+    <div class="module-head">
+      <span class="tag">03</span>
+      <h2>Workforce Enablement</h2>
+      <span class="meta">CEAT Kelani International Tyres</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="LevelUp — Digital Learning Transformation_1.jpg" alt="NCQP 2025">
+            <img src="LevelUp — Digital Learning Transformation_2.jpg" alt="NCQP 2025">
+            <img src="LevelUp — Digital Learning Transformation_3.jpg" alt="NCQP 2025">
+            <img src="LevelUp — Digital Learning Transformation_4.jpg" alt="NCQP 2025">
+            <img src="LevelUp — Digital Learning Transformation_5.jpg" alt="NCQP 2025">
+            <img src="LevelUp — Digital Learning Transformation_6.jpg" alt="NCQP 2025">
+            <img src="LevelUp — Digital Learning Transformation_7.jpg" alt="NCQP 2025">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>LevelUp — Digital Learning Transformation</h3>
+        <span class="role">Project Lead</span>
+        <p>Turned low digital-learning engagement into a full-scale transformation through gamified
+          sprints, smart nudges, and role-based content — building a learning culture that stuck.</p>
+        <div class="impact">→ Gold Award, NCQP 2025</div>
+        <a class="card-link" href="journey/levelup.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="Bi_team_1.jpg" alt="Completion of the Program">
+            <img src="Bi_team_2.jpeg" alt="During Program">
+            <img src="Bi_team_3.jpeg" alt="During Program">
+            <img src="Bi_team_4.jpeg" alt="During Program">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>CEAT Power BI Champions Initiative</h3>
+        <span class="role">Co-Lead</span>
+        <p>Built a 20-member cross-functional analytics team spanning 6 departments from the ground up,
+          shifting the organization from manual reporting to visual, data-driven decision-making.</p>
+        <div class="impact">→ 20 members · 6 departments</div>
+        <a class="card-link" href="journey/power-bi-champions.html">View project journey ↗</a>
+      </div>
+      <div class="card">
+        <div class="gallery" data-gallery>
+          <div class="gallery-track">
+            <img src="Cyberweek_Year1_1.jpg" alt="Information and Cybersecurity Awareness Week event photo">
+            <img src="Cyberweek_Year2_1.jpeg" alt="Information and Cybersecurity Awareness Week campaign material">
+            <img src="Cyberweek_Year2_2.jpeg" alt="Information and Cybersecurity Awareness Week campaign material">
+            <img src="Cyberweek_Year2_3.jpeg" alt="Information and Cybersecurity Awareness Week campaign material">
+            <img src="Cyberweek_Year2_4.jpeg" alt="Information and Cybersecurity Awareness Week campaign material">
+          </div>
+          <button class="gallery-nav prev" aria-label="Previous image">‹</button>
+          <button class="gallery-nav next" aria-label="Next image">›</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <h3>Information &amp; Cybersecurity Awareness Week</h3>
+        <span class="role">Organizer &amp; Lead</span>
+        <p>Organized and delivered a company-wide awareness campaign for 2 consecutive years, driving
+          engagement across departments.</p>
+        <div class="impact">→ Delivered 2 years running</div>
+        <a class="card-link" href="journey/cyber-awareness-week.html">View project journey ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="path">
+    <div class="module-head">
+      <span class="tag">04</span>
+      <h2>Career Path</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <span class="when">Jan 2024 — Present</span>
+        <h4>Associate Project Manager, CEAT Kelani International Tyres (Pvt) Ltd</h4>
+        <p>Leading a portfolio of digital transformation initiatives across manufacturing, enterprise
+          systems, mobile apps, analytics, and workforce enablement.</p>
+      </div>
+      <div class="tl-item">
+        <span class="when">Sep 2023 — Dec 2023 </span>
+        <h4>Business Analyst, Cemex Software (Pvt) Ltd</h4>
+        <p>Reviewed a client's HRM system into a structured development roadmap; managed end-to-end
+          change requests.</p>
+      </div>
+      <div class="tl-item">
+        <span class="when">May 2021 — Aug 2023</span>
+        <h4>Business Analyst – Associate, Jigsaw Ensemble (Pvt) Ltd</h4>
+        <p>Delivered client projects including a Hotel Reservation System, Toyota Lanka Supplier
+          Registration Portal, Commodity Bookkeeping System, and CSL Gem Certificate Generation Portal.</p>
+      </div>
+      <div class="tl-item">
+        <span class="when">Jan 2021 — May 2021</span>
+        <h4>Business Analyst – Intern, Jigsaw Ensemble (Pvt) Ltd</h4>
+        <p>Documented client requirements, maintained WordPress content, delivered Office 365 support
+          within SLA.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="education">
+    <div class="module-head">
+      <span class="tag">05</span>
+      <h2>Education &amp; Certifications</h2>
+    </div>
+    <div class="edu-list">
+      <div class="edu-item">
+        <div>
+          <h4>BSc in Business Information Systems Management — 1st Class</h4>
+          <div class="school">Cardiff Metropolitan University</div>
+        </div>
+        <div class="when">2020</div>
+      </div>
+      <div class="edu-item">
+        <div>
+          <h4>HND in Computing &amp; Software Engineering</h4>
+          <div class="school">ICBT</div>
+        </div>
+        <div class="when">2019</div>
+      </div>
+      <div class="edu-item">
+        <div>
+          <h4>Diploma in Graphic Designing</h4>
+          <div class="school">Thesaurus Computing Centre</div>
+        </div>
+        <div class="when"></div>
+      </div>
+      <div class="edu-item">
+        <div>
+          <h4>PMP® Certification</h4>
+          <div class="school">35 contact hours of formal project management training completed; preparing for examination</div>
+        </div>
+        <div class="when">In Progress</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trace-rule"></div>
+
+  <section class="module" id="toolkit">
+    <div class="module-head">
+      <span class="tag">06</span>
+      <h2>Toolkit</h2>
+    </div>
+    <div class="chips">
+      <span class="chip">JIRA</span>
+      <span class="chip">ClickUp</span>
+      <span class="chip">SAP S/4HANA</span>
+      <span class="chip">Power BI</span>
+      <span class="chip">Office 365</span>
+      <span class="chip">WordPress</span>
+      <span class="chip">Figma</span>
+      <span class="chip">Adobe Photoshop</span>
+      <span class="chip">Adobe Illustrator</span>
+      <span class="chip">Adobe XD</span>
+      <span class="chip">Canva</span>
+      <span class="chip">GitHub</span>
+    </div>
+  </section>
+
+  <footer>
+    <h2>Let's talk</h2>
+    <div class="contact-row">
+      <span>📍 Kelaniya, Sri Lanka</span>
+      <a href="mailto:djtrowell@gmail.com">djtrowell@gmail.com</a>
+      <a href="tel:+94719645401">+94 71 964 5401</a>
+      <a href="https://linkedin.com/in/dilan-jude-trowell" target="_blank" rel="noopener">linkedin.com/in/dilan-jude-trowell</a>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    try {
+      var root = document.documentElement;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+
+      /* =========================================================
+         1. HERO — barcode scan reveals the name, then the letters
+            react to the cursor
+         ========================================================= */
+      var hero = document.querySelector('.hero');
+      var scan = hero.querySelector('.scan');
+      var h1 = hero.querySelector('h1');
+      var fullName = h1.textContent.trim();
+      h1.setAttribute('aria-label', fullName.replace(/\u00a0/g, ' '));
+      h1.textContent = '';
+
+      var letters = [];
+      var words = fullName.split(' ');
+      words.forEach(function (w, wi) {
+        var word = document.createElement('span');
+        word.className = 'word';
+        word.setAttribute('aria-hidden', 'true');
+        Array.prototype.forEach.call(w, function (c) {
+          var s = document.createElement('span');
+          s.className = 'ch';
+          s.textContent = c;
+          word.appendChild(s);
+          letters.push(s);
+        });
+        h1.appendChild(word);
+        if (wi < words.length - 1) h1.appendChild(document.createTextNode(' '));
+      });
+
+      var heroReady = false;
+      var resolveHero;
+      var heroDone = new Promise(function (r) { resolveHero = r; });
+
+      function finishHero() {
+        heroReady = true;
+        letters.forEach(function (l) { l.classList.add('on'); });
+        hero.classList.add('ready');
+        scan.classList.remove('active');
+        resolveHero();
+      }
+
+      function runScan() {
+        var hr = hero.getBoundingClientRect();
+        var centers = letters.map(function (l) {
+          var r = l.getBoundingClientRect();
+          return r.left + r.width / 2 - hr.left;
+        });
+        var width = hr.width;
+        var duration = 1400;
+        var start = null;
+        scan.classList.add('active');
+        function frame(ts) {
+          if (start === null) start = ts;
+          var t = clamp((ts - start) / duration, 0, 1);
+          var x = t * width;
+          scan.style.transform = 'translateX(' + x + 'px)';
+          letters.forEach(function (l, i) {
+            if (centers[i] <= x) l.classList.add('on');
+          });
+          if (t < 1) requestAnimationFrame(frame);
+          else finishHero();
+        }
+        requestAnimationFrame(frame);
+      }
+
+      if (reduce) {
+        finishHero();
+      } else {
+        var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+        Promise.race([fontsReady, new Promise(function (r) { setTimeout(r, 1200); })]).then(runScan);
+      }
+
+      // cursor interaction after the scan
+      if (finePointer && !reduce) {
+        var mx = -9999, my = -9999, inside = false, raf = 0;
+        function paint() {
+          raf = 0;
+          var hr = hero.getBoundingClientRect();
+          for (var i = 0; i < letters.length; i++) {
+            var r = letters[i].getBoundingClientRect();
+            var cx = r.left + r.width / 2;
+            var cy = r.top + r.height / 2;
+            var d = Math.hypot(cx - mx, (cy - my) * 0.6);
+            var k = inside ? Math.max(0, 1 - d / 150) : 0;
+            letters[i].style.setProperty('--k', k.toFixed(3));
+          }
+          scan.style.transform = 'translateX(' + (mx - hr.left) + 'px)';
+        }
+        function queue() { if (!raf) raf = requestAnimationFrame(paint); }
+        hero.addEventListener('pointermove', function (e) {
+          if (!heroReady) return;
+          mx = e.clientX; my = e.clientY;
+          if (!inside) { inside = true; scan.classList.add('hover'); scan.classList.add('active'); }
+          queue();
+        });
+        hero.addEventListener('pointerleave', function () {
+          if (!heroReady) return;
+          inside = false;
+          scan.classList.remove('hover');
+          scan.classList.remove('active');
+          queue();
+        });
+      }
+
+      /* =========================================================
+         2. STATS — count up once after the hero scan
+         ========================================================= */
+      var statNums = document.querySelectorAll('.stat .num');
+      heroDone.then(function () {
+        statNums.forEach(function (el) {
+          var m = el.textContent.trim().match(/^(\d+)(.*)$/);
+          if (!m) return;
+          var target = parseInt(m[1], 10);
+          var suffix = m[2];
+          if (target >= 100 || reduce || !('IntersectionObserver' in window)) return; // leave the year as-is
+          el.textContent = '0' + suffix;
+          var io = new IntersectionObserver(function (entries) {
+            if (!entries[0].isIntersecting) return;
+            io.disconnect();
+            var t0 = null;
+            function step(ts) {
+              if (t0 === null) t0 = ts;
+              var p = clamp((ts - t0) / 1000, 0, 1);
+              var eased = 1 - Math.pow(1 - p, 3);
+              el.textContent = Math.round(target * eased) + suffix;
+              if (p < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+          }, { threshold: 0.6 });
+          io.observe(el);
+        });
+      });
+
+      /* =========================================================
+         3. CARDS — cursor spotlight + "in progress" pulse
+         ========================================================= */
+      document.querySelectorAll('.card').forEach(function (card) {
+        card.addEventListener('pointermove', function (e) {
+          var r = card.getBoundingClientRect();
+          card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+          card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        });
+      });
+      document.querySelectorAll('.impact').forEach(function (el) {
+        if (/in progress/i.test(el.textContent)) {
+          el.classList.add('wip');
+          var dot = document.createElement('span');
+          dot.className = 'pulse';
+          dot.setAttribute('aria-hidden', 'true');
+          el.insertBefore(dot, el.firstChild);
+        }
+      });
+
+      /* =========================================================
+         4. MAGNETIC HERO BUTTONS
+         ========================================================= */
+      if (finePointer && !reduce) {
+        document.querySelectorAll('.hero-links .btn').forEach(function (btn) {
+          btn.addEventListener('pointermove', function (e) {
+            var r = btn.getBoundingClientRect();
+            var x = (e.clientX - (r.left + r.width / 2)) * 0.25;
+            var y = (e.clientY - (r.top + r.height / 2)) * 0.35;
+            btn.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+          });
+          btn.addEventListener('pointerleave', function () { btn.style.transform = ''; });
+        });
+      }
+
+      /* =========================================================
+         5. LIGHTBOX
+         ========================================================= */
+      var lb = document.createElement('div');
+      lb.className = 'lightbox';
+      lb.hidden = true;
+      lb.setAttribute('role', 'dialog');
+      lb.setAttribute('aria-modal', 'true');
+      lb.setAttribute('aria-label', 'Image viewer');
+      lb.innerHTML =
+        '<button class="lb-btn lb-close" aria-label="Close">×</button>' +
+        '<button class="lb-btn lb-prev" aria-label="Previous image">‹</button>' +
+        '<img alt="">' +
+        '<p class="lb-cap"></p>' +
+        '<button class="lb-btn lb-next" aria-label="Next image">›</button>';
+      document.body.appendChild(lb);
+      var lbImg = lb.querySelector('img');
+      var lbCap = lb.querySelector('.lb-cap');
+      var lbClose = lb.querySelector('.lb-close');
+      var lbPrev = lb.querySelector('.lb-prev');
+      var lbNext = lb.querySelector('.lb-next');
+      var lbSet = [], lbIndex = 0, lbTitle = '', lastFocus = null, lbOnClose = null;
+
+      function lbShow(i) {
+        lbIndex = (i + lbSet.length) % lbSet.length;
+        var src = lbSet[lbIndex];
+        lbImg.style.animation = 'none';
+        void lbImg.offsetWidth;
+        lbImg.style.animation = '';
+        lbImg.src = src.currentSrc || src.src;
+        lbImg.alt = src.alt;
+        lbCap.textContent = lbTitle + (lbSet.length > 1 ? '  ·  ' + (lbIndex + 1) + ' / ' + lbSet.length : '');
+        if (lbOnClose) lbOnClose(lbIndex);
+      }
+      function lbOpen(imgs, i, title, sync) {
+        lbSet = imgs; lbTitle = title; lbOnClose = sync;
+        lastFocus = document.activeElement;
+        lb.classList.toggle('single', imgs.length <= 1);
+        lb.hidden = false;
+        document.body.style.overflow = 'hidden';
+        lbShow(i);
+        lbClose.focus();
+      }
+      function lbHide() {
+        lb.hidden = true;
+        document.body.style.overflow = '';
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+      lbClose.addEventListener('click', lbHide);
+      lbPrev.addEventListener('click', function () { lbShow(lbIndex - 1); });
+      lbNext.addEventListener('click', function () { lbShow(lbIndex + 1); });
+      lb.addEventListener('click', function (e) { if (e.target === lb) lbHide(); });
+      document.addEventListener('keydown', function (e) {
+        if (lb.hidden) return;
+        if (e.key === 'Escape') lbHide();
+        else if (e.key === 'ArrowLeft' && lbSet.length > 1) lbShow(lbIndex - 1);
+        else if (e.key === 'ArrowRight' && lbSet.length > 1) lbShow(lbIndex + 1);
+        else if (e.key === 'Tab') {
+          var f = Array.prototype.filter.call(lb.querySelectorAll('button'), function (b) { return b.offsetParent !== null; });
+          var first = f[0], last = f[f.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      });
+
+      /* =========================================================
+         6. GALLERIES — buttons, dots, drag/swipe, keys, enlarge
+         ========================================================= */
+      document.querySelectorAll('.gallery[data-gallery]').forEach(function (gallery) {
+        var track = gallery.querySelector('.gallery-track');
+        var slides = Array.prototype.slice.call(track.children);
+        var dotsWrap = gallery.querySelector('.gallery-dots');
+        var card = gallery.closest('.card');
+        var title = card ? (card.querySelector('h3') || {}).textContent || '' : '';
+        var index = 0;
+        var moved = false;
+
+        var counter = document.createElement('span');
+        counter.className = 'gallery-count';
+        counter.setAttribute('aria-hidden', 'true');
+        gallery.appendChild(counter);
+
+        gallery.tabIndex = 0;
+        gallery.setAttribute('role', 'group');
+        gallery.setAttribute('aria-roledescription', 'carousel');
+        if (title) gallery.setAttribute('aria-label', title + ' images');
+
+        if (slides.length <= 1) { gallery.classList.add('single'); }
+
+        slides.forEach(function (_, i) {
+          var dot = document.createElement('button');
+          dot.className = 'dot' + (i === 0 ? ' active' : '');
+          dot.setAttribute('aria-label', 'Go to image ' + (i + 1));
+          dot.addEventListener('click', function () { go(i); });
+          dotsWrap.appendChild(dot);
+        });
+
+        function go(i) {
+          index = (i + slides.length) % slides.length;
+          track.style.transform = 'translateX(-' + (index * 100) + '%)';
+          dotsWrap.querySelectorAll('.dot').forEach(function (d, di) {
+            d.classList.toggle('active', di === index);
+          });
+          counter.textContent = (index + 1) + ' / ' + slides.length;
+        }
+        go(0);
+
+        var prevBtn = gallery.querySelector('.prev');
+        var nextBtn = gallery.querySelector('.next');
+        if (prevBtn) prevBtn.addEventListener('click', function () { go(index - 1); });
+        if (nextBtn) nextBtn.addEventListener('click', function () { go(index + 1); });
+
+        // drag / swipe
+        track.addEventListener('dragstart', function (e) { e.preventDefault(); });
+        gallery.addEventListener('pointerdown', function (e) {
+          if (e.button !== 0 || e.target.closest('button')) return;
+          var startX = e.clientX, dx = 0;
+          moved = false;
+          track.style.transition = 'none';
+          function move(ev) {
+            dx = ev.clientX - startX;
+            if (Math.abs(dx) > 5) moved = true;
+            if (slides.length <= 1) return;
+            var w = gallery.clientWidth;
+            var eff = dx;
+            if ((index === 0 && dx > 0) || (index === slides.length - 1 && dx < 0)) eff = dx * 0.3;
+            track.style.transform = 'translateX(' + (-index * w + eff) + 'px)';
+          }
+          function up() {
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', up);
+            window.removeEventListener('pointercancel', up);
+            track.style.transition = '';
+            if (slides.length <= 1) return;
+            var w = gallery.clientWidth;
+            if (dx < -w * 0.15 && index < slides.length - 1) go(index + 1);
+            else if (dx > w * 0.15 && index > 0) go(index - 1);
+            else go(index);
+          }
+          window.addEventListener('pointermove', move);
+          window.addEventListener('pointerup', up);
+          window.addEventListener('pointercancel', up);
+        });
+
+        // click image to enlarge
+        gallery.addEventListener('click', function (e) {
+          if (moved) { moved = false; return; }
+          if (!e.target.closest('img')) return;
+          lbOpen(slides, index, title, function (i) { go(i); });
+        });
+
+        // keyboard
+        gallery.addEventListener('keydown', function (e) {
+          if (e.target !== gallery) return;
+          if (e.key === 'ArrowLeft') { e.preventDefault(); go(index - 1); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); go(index + 1); }
+          else if (e.key === 'Enter') { lbOpen(slides, index, title, function (i) { go(i); }); }
+        });
+      });
+
+      /* =========================================================
+         7. SCROLL REVEAL (cards, education, toolkit chips)
+         ========================================================= */
+      if (!reduce && 'IntersectionObserver' in window) {
+        var rvIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            var el = en.target;
+            el.classList.add('in');
+            rvIO.unobserve(el);
+            setTimeout(function () { el.style.transitionDelay = ''; }, 1000);
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+        document.querySelectorAll('.card, .edu-item, .chip').forEach(function (el) {
+          var idx = Array.prototype.indexOf.call(el.parentNode.children, el);
+          el.classList.add('rv');
+          el.style.transitionDelay = ((idx % 4) * 70) + 'ms';
+          rvIO.observe(el);
+        });
+      }
+
+      /* =========================================================
+         8. SIDE RAIL — jump between sections, shows where you are
+         ========================================================= */
+      var sections = Array.prototype.slice.call(document.querySelectorAll('section.module'));
+      var rail = document.createElement('nav');
+      rail.className = 'rail';
+      rail.setAttribute('aria-label', 'Sections');
+      var railDots = sections.map(function (s) {
+        var a = document.createElement('a');
+        a.className = 'rail-dot';
+        a.href = '#' + s.id;
+        var label = s.querySelector('h2').textContent;
+        a.setAttribute('aria-label', label);
+        var span = document.createElement('span');
+        span.className = 'rail-label';
+        span.textContent = label;
+        a.appendChild(span);
+        rail.appendChild(a);
+        return a;
+      });
+      document.body.appendChild(rail);
+
+      /* =========================================================
+         9. SCROLL-DRIVEN: progress bar, barcode drift, rail, timeline
+         ========================================================= */
+      var progress = document.querySelector('.progress');
+      var timeline = document.querySelector('.timeline');
+      var tlItems = timeline ? Array.prototype.slice.call(timeline.querySelectorAll('.tl-item')) : [];
+      var ticking = false;
+
+      function onScroll() {
+        ticking = false;
+        var y = window.scrollY || window.pageYOffset;
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.transform = 'scaleX(' + (max > 0 ? clamp(y / max, 0, 1) : 0) + ')';
+
+        if (!reduce) root.style.setProperty('--shift', (-y * 0.25).toFixed(1));
+
+        var probe = window.innerHeight * 0.4;
+        var active = -1;
+        sections.forEach(function (s, i) {
+          var r = s.getBoundingClientRect();
+          if (r.top <= probe && r.bottom > probe) active = i;
+        });
+        railDots.forEach(function (d, i) {
+          d.classList.toggle('active', i === active);
+          if (i === active) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
+        });
+
+        if (timeline) {
+          var tr = timeline.getBoundingClientRect();
+          var mid = window.innerHeight * 0.6;
+          timeline.style.setProperty('--p', clamp(mid - tr.top, 0, tr.height) + 'px');
+          tlItems.forEach(function (it) {
+            var ir = it.getBoundingClientRect();
+            it.classList.toggle('passed', ir.top + 4 < mid);
+          });
+        }
+      }
+      window.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+      }, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
+
+    } catch (err) {
+      // if anything goes wrong, show the page as-is (no hidden content)
+      document.documentElement.classList.remove('js');
+      console.error(err);
+    }
+  })();
+  </script>
+
+</body>
+</html>
