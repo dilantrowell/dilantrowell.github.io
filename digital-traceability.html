@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Traceability (Factory-Wide) — Project journey · Dilan Jude Trowell</title>
+<meta name="description" content="One chain, four links. This is the biggest traceability effort so far, and it is still being built.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#12161A; --bg-panel:#181D22; --line:#2A3138;
+  --ink:#E9EAE6; --ink-dim:#9AA3AB;
+  --steel:#5B8FB0; --signal:#E0A458; --ok:#7FA88C;
+  --a:var(--signal);
+  --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans',sans-serif; --display:'Oswald',sans-serif;
+  --prog:0;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition-duration:.001ms!important}
+}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--steel)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+.jbar{position:fixed;top:0;left:0;right:0;height:2px;z-index:60;background:var(--a);
+  transform-origin:0 50%;transform:scaleX(var(--prog));box-shadow:0 0 10px var(--a);pointer-events:none}
+.topnav{display:flex;justify-content:space-between;align-items:center;padding:14px 6vw;
+  font-family:var(--mono);font-size:12px;color:var(--ink-dim);border-bottom:1px solid var(--line)}
+.topnav a{color:var(--ink);text-decoration:none}
+.topnav a:hover{color:var(--signal)}
+
+.jhero{padding:8vh 6vw 5vh;max-width:1100px}
+.kicker{font-family:var(--mono);font-size:13px;color:var(--a);letter-spacing:.08em;margin:0 0 14px}
+.jhero h1{font-family:var(--display);font-weight:700;font-size:clamp(2.1rem,5.2vw,4rem);line-height:1.04;
+  margin:0 0 18px;text-transform:uppercase;letter-spacing:-.01em}
+.lede{font-size:clamp(1.02rem,1.5vw,1.2rem);color:var(--ink-dim);max-width:640px;margin:0}
+.badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--signal);
+  border:1px solid var(--signal);padding:4px 10px;border-radius:2px;margin-top:18px}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--signal);box-shadow:0 0 6px var(--signal);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.wrap{max-width:1100px;padding:4vh 6vw 8vh}
+.chap h3{margin:0 0 6px;font-family:var(--sans);font-weight:600;font-size:1.1rem}
+.chap p{margin:0;color:var(--ink-dim);max-width:520px}
+.chap .n{display:block;font-family:var(--mono);font-size:12px;color:var(--a);margin-bottom:4px}
+
+/* pinned scroll stories */
+.pin{position:relative;height:calc(var(--n,5)*85vh + 15vh)}
+.pin-inner{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);
+  gap:4vw;align-items:center;padding:0 6vw;max-width:1200px}
+.pin .txt{position:relative;min-height:250px}
+.pin .txt .chap{position:absolute;left:0;right:0;top:0;opacity:0;transform:translateY(14px);
+  transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+.pin .txt .chap.now{opacity:1;transform:none;pointer-events:auto}
+.pin .txt .chap h3{font-family:var(--display);text-transform:uppercase;font-weight:600;font-size:clamp(1.3rem,2.4vw,1.8rem);margin-bottom:10px}
+.pdots{position:absolute;left:0;bottom:0;display:flex;gap:6px}
+.pdots i{width:6px;height:6px;border-radius:50%;background:var(--line);transition:all .3s ease}
+.pdots i.on{background:var(--a);width:18px;border-radius:3px}
+html:not(.js) .pin .txt .chap{position:static;opacity:1;transform:none}
+@media (max-width:900px){
+  .pin-inner{grid-template-columns:1fr;grid-template-rows:38vh auto;align-content:center;gap:2vh}
+  .pin .vis{order:-1}
+  .pin.m-static{height:auto}
+  .pin.m-static .pin-inner{position:static;height:auto;padding:4vh 6vw}
+  .pin.m-static [data-at]{opacity:1!important;transform:none!important}
+}
+
+/* footer */
+.jfoot{max-width:1100px;padding:8vh 6vw 9vh;border-top:1px solid var(--line)}
+.take .k{font-family:var(--mono);font-size:12px;color:var(--a)}
+.take p{font-family:var(--display);font-size:clamp(1.4rem,3vw,2.2rem);line-height:1.2;margin:8px 0 0;max-width:760px}
+.foot-links{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.04em;text-decoration:none;padding:11px 20px;border-radius:2px;
+  border:1px solid var(--line);color:var(--ink);background:transparent;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.btn:hover{border-color:var(--steel);color:var(--steel)}
+.btn.primary{background:var(--steel);color:#0F1216;border-color:var(--steel);font-weight:500}
+.btn.primary:hover{background:var(--ink);border-color:var(--ink);color:#0F1216}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.fine{margin-top:36px;font-family:var(--mono);font-size:11px;color:var(--ink-dim);opacity:.65;max-width:620px}
+
+/* reveal */
+.js .rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+
+:root{--a:var(--signal)}
+.hist{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 7vh;font-family:var(--mono);font-size:13px;color:var(--ink-dim)}
+.hist a{border:1px solid var(--line);padding:8px 14px;border-radius:2px;color:var(--ink);text-decoration:none}
+.hist a:hover{border-color:var(--signal);color:var(--signal)}
+.nodes{display:flex;align-items:center;flex-wrap:wrap;row-gap:18px}
+.node{position:relative;width:132px;height:132px;border:1px solid var(--line);background:var(--bg-panel);border-radius:2px;
+  font-family:var(--mono);font-size:12px;color:var(--ink-dim);cursor:pointer;padding:12px;display:grid;place-items:center;text-align:center;transition:all .25s}
+.node:hover{border-color:var(--steel);color:var(--ink)}
+.node[aria-pressed=true]{border-color:var(--signal);color:var(--signal);background:rgba(224,164,88,.07);transform:translateY(-6px)}
+.node[aria-pressed=true]::after{content:'';position:absolute;inset:-7px;border:1px dashed var(--signal);border-radius:2px;animation:spin 3s linear infinite;opacity:.6}
+@keyframes spin{50%{inset:-10px}}
+.link{flex:1;min-width:24px;height:2px;background:repeating-linear-gradient(90deg,var(--steel) 0 6px,transparent 6px 12px);background-size:12px 2px;animation:dash 1s linear infinite}
+@keyframes dash{to{background-position:12px 0}}
+.tpanel{margin-top:5vh;max-width:640px;border-left:2px solid var(--signal);padding:4px 0 4px 22px;min-height:120px}
+.tpanel h3{font-family:var(--display);text-transform:uppercase;font-size:1.6rem;margin:0 0 8px}
+.tpanel p{margin:0;color:var(--ink-dim)}
+.hint{font-family:var(--mono);font-size:12px;color:var(--ink-dim);margin:0 0 18px}
+@media(max-width:700px){.link{display:none}.nodes{gap:10px}.node{width:calc(50% - 5px)}}
+</style>
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<div class="jbar" aria-hidden="true"></div>
+<div class="topnav"><a href="../index.html">← Back to portfolio</a><span>Project journey</span></div>
+<header class="jhero">
+  <p class="kicker">Project journey · Project Lead</p>
+  <h1>Digital Traceability (Factory-Wide)</h1>
+  <p class="lede">One chain, four links. This is the biggest traceability effort so far, and it is still being built.</p>
+  <span class="badge">In progress</span>
+</header>
+<main>
+<section class="wrap">
+<div class="hist"><span>Built on lessons from</span><a href="autobridge-2w.html">AutoBridge 2W journey ↗</a><a href="fifo-system.html">FIFO journey ↗</a></div>
+<p class="hint">Select a link in the chain to see my part in it.</p>
+<div class="nodes">
+<button class="node" aria-pressed="false">Material genealogy</button><i class="link"></i>
+<button class="node" aria-pressed="false">Production traceability</button><i class="link"></i>
+<button class="node" aria-pressed="false">Real-time inventory</button><i class="link"></i>
+<button class="node" aria-pressed="false">RMS-to-dispatch</button>
+</div>
+<div class="tpanel" aria-live="polite"><h3 id="pt"></h3><p id="pp"></p></div>
+</section>
+</main>
+<footer class="jfoot">
+  <div class="take"><span class="k">What stayed with me</span><p>Traceability is a chain. It is only as strong as its least-connected link.</p></div>
+  <div class="foot-links">
+    <a class="btn" href="../index.html">← Back to portfolio</a>
+    <a class="btn primary" href="lab-test-data.html">Next journey: Laboratory Test Data Management System ↗</a>
+  </div>
+  <p class="fine">This page tells the story of my role and approach. Internal systems, data and figures are left out on purpose.</p>
+</footer>
+<script>
+(function () {
+  var root = document.documentElement;
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+  var pins = [].slice.call(document.querySelectorAll('[data-pin]'));
+  var sps = [].slice.call(document.querySelectorAll('[data-sp]'));
+
+  pins.forEach(function (p) {
+    var n = +p.getAttribute('data-pin') || 1;
+    p.style.setProperty('--n', n);
+    p._at = [].slice.call(p.querySelectorAll('[data-at]'));
+    var txt = p.querySelector('.txt');
+    if (txt) {
+      var d = document.createElement('div');
+      d.className = 'pdots'; d.setAttribute('aria-hidden', 'true');
+      for (var i = 0; i < n; i++) d.appendChild(document.createElement('i'));
+      txt.appendChild(d); p._dots = [].slice.call(d.children);
+    }
+  });
+
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var vh = window.innerHeight;
+    var max = root.scrollHeight - vh;
+    root.style.setProperty('--prog', max > 0 ? clamp(window.scrollY / max, 0, 1).toFixed(4) : 0);
+
+    pins.forEach(function (p) {
+      var n = +p.getAttribute('data-pin');
+      var r = p.getBoundingClientRect();
+      var span = r.height - vh;
+      var t = span > 0 ? clamp(-r.top / span, 0, 1) : 0;
+      var step = Math.min(n - 1, Math.floor(t * n));
+      p.style.setProperty('--pp', t.toFixed(4));
+      p.setAttribute('data-step', step);
+      p._at.forEach(function (e) {
+        var k = +e.getAttribute('data-at');
+        e.classList.toggle('on', step >= k);
+        e.classList.toggle('now', step === k);
+      });
+      if (p._dots) p._dots.forEach(function (d, i) { d.classList.toggle('on', i <= step); });
+    });
+
+    sps.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      el.style.setProperty('--sp', clamp((vh * 0.5 - r.top) / r.height, 0, 1).toFixed(4));
+    });
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+
+  // reveal on view
+  var els = [].slice.call(document.querySelectorAll('.rv, .io'));
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+    els.forEach(function (e) { io.observe(e); });
+  } else {
+    els.forEach(function (e) { e.classList.add('in'); });
+  }
+})();
+
+</script>
+<script>
+var N=[
+["Material genealogy","I am mapping where every material comes from and how it flows into production, so a question about any batch can be answered quickly instead of investigated for days."],
+["Production traceability","I am linking each production stage to the materials it used, and aligning the teams who own each stage so the trail has no silent gaps."],
+["Real-time inventory","I am working to make stock visible as it moves, so decisions stop depending on yesterday's numbers."],
+["RMS-to-dispatch","I am connecting the chain all the way through to dispatch, so the trail does not stop at the factory door."]];
+var b=[].slice.call(document.querySelectorAll('.node')),t=document.getElementById('pt'),p=document.getElementById('pp');
+function sel(i){b.forEach(function(x,j){x.setAttribute('aria-pressed',j===i)});t.textContent=N[i][0];p.textContent=N[i][1];}
+b.forEach(function(x,i){x.addEventListener('click',function(){sel(i)})});sel(0);
+</script>
+</body>
+</html>

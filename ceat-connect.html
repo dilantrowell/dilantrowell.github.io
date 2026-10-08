@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEAT Connect Mobile App — Project journey · Dilan Jude Trowell</title>
+<meta name="description" content="From a blank screen to the Google Play Store and the Apple App Store. Scroll and watch the phone fill in as the project moves.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#12161A; --bg-panel:#181D22; --line:#2A3138;
+  --ink:#E9EAE6; --ink-dim:#9AA3AB;
+  --steel:#5B8FB0; --signal:#E0A458; --ok:#7FA88C;
+  --a:var(--signal);
+  --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans',sans-serif; --display:'Oswald',sans-serif;
+  --prog:0;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition-duration:.001ms!important}
+}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--steel)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+.jbar{position:fixed;top:0;left:0;right:0;height:2px;z-index:60;background:var(--a);
+  transform-origin:0 50%;transform:scaleX(var(--prog));box-shadow:0 0 10px var(--a);pointer-events:none}
+.topnav{display:flex;justify-content:space-between;align-items:center;padding:14px 6vw;
+  font-family:var(--mono);font-size:12px;color:var(--ink-dim);border-bottom:1px solid var(--line)}
+.topnav a{color:var(--ink);text-decoration:none}
+.topnav a:hover{color:var(--signal)}
+
+.jhero{padding:8vh 6vw 5vh;max-width:1100px}
+.kicker{font-family:var(--mono);font-size:13px;color:var(--a);letter-spacing:.08em;margin:0 0 14px}
+.jhero h1{font-family:var(--display);font-weight:700;font-size:clamp(2.1rem,5.2vw,4rem);line-height:1.04;
+  margin:0 0 18px;text-transform:uppercase;letter-spacing:-.01em}
+.lede{font-size:clamp(1.02rem,1.5vw,1.2rem);color:var(--ink-dim);max-width:640px;margin:0}
+.badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--signal);
+  border:1px solid var(--signal);padding:4px 10px;border-radius:2px;margin-top:18px}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--signal);box-shadow:0 0 6px var(--signal);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.wrap{max-width:1100px;padding:4vh 6vw 8vh}
+.chap h3{margin:0 0 6px;font-family:var(--sans);font-weight:600;font-size:1.1rem}
+.chap p{margin:0;color:var(--ink-dim);max-width:520px}
+.chap .n{display:block;font-family:var(--mono);font-size:12px;color:var(--a);margin-bottom:4px}
+
+/* pinned scroll stories */
+.pin{position:relative;height:calc(var(--n,5)*85vh + 15vh)}
+.pin-inner{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);
+  gap:4vw;align-items:center;padding:0 6vw;max-width:1200px}
+.pin .txt{position:relative;min-height:250px}
+.pin .txt .chap{position:absolute;left:0;right:0;top:0;opacity:0;transform:translateY(14px);
+  transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+.pin .txt .chap.now{opacity:1;transform:none;pointer-events:auto}
+.pin .txt .chap h3{font-family:var(--display);text-transform:uppercase;font-weight:600;font-size:clamp(1.3rem,2.4vw,1.8rem);margin-bottom:10px}
+.pdots{position:absolute;left:0;bottom:0;display:flex;gap:6px}
+.pdots i{width:6px;height:6px;border-radius:50%;background:var(--line);transition:all .3s ease}
+.pdots i.on{background:var(--a);width:18px;border-radius:3px}
+html:not(.js) .pin .txt .chap{position:static;opacity:1;transform:none}
+@media (max-width:900px){
+  .pin-inner{grid-template-columns:1fr;grid-template-rows:38vh auto;align-content:center;gap:2vh}
+  .pin .vis{order:-1}
+  .pin.m-static{height:auto}
+  .pin.m-static .pin-inner{position:static;height:auto;padding:4vh 6vw}
+  .pin.m-static [data-at]{opacity:1!important;transform:none!important}
+}
+
+/* footer */
+.jfoot{max-width:1100px;padding:8vh 6vw 9vh;border-top:1px solid var(--line)}
+.take .k{font-family:var(--mono);font-size:12px;color:var(--a)}
+.take p{font-family:var(--display);font-size:clamp(1.4rem,3vw,2.2rem);line-height:1.2;margin:8px 0 0;max-width:760px}
+.foot-links{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.04em;text-decoration:none;padding:11px 20px;border-radius:2px;
+  border:1px solid var(--line);color:var(--ink);background:transparent;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.btn:hover{border-color:var(--steel);color:var(--steel)}
+.btn.primary{background:var(--steel);color:#0F1216;border-color:var(--steel);font-weight:500}
+.btn.primary:hover{background:var(--ink);border-color:var(--ink);color:#0F1216}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.fine{margin-top:36px;font-family:var(--mono);font-size:11px;color:var(--ink-dim);opacity:.65;max-width:620px}
+
+/* reveal */
+.js .rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+
+:root{--a:var(--steel)}
+.phone{width:min(250px,62%);aspect-ratio:9/18;margin:auto;border:2px solid var(--ink-dim);border-radius:30px;padding:12px;position:relative;background:#0D1013;overflow:hidden;max-height:100%}
+.scr{position:absolute;inset:12px;border-radius:20px;padding:16px 14px;display:flex;flex-direction:column;gap:10px;opacity:0;transition:opacity .5s;background:#12161A}
+.scr.on{opacity:1}
+.cap{font-family:var(--mono);font-size:11px;color:var(--ink-dim);margin-bottom:2px}
+.bx{height:44px;border:1px dashed var(--ink-dim);border-radius:6px}
+.bx.t{height:70px}
+.s1 .bx,.s2 .bx,.s3 .bx{border-style:solid;border-color:transparent;background:var(--bg-panel)}
+.s1 .bx:nth-child(2),.s2 .bx:nth-child(2),.s3 .bx:nth-child(2){background:rgba(91,143,176,.35)}
+.s1 .bx:nth-child(4),.s2 .bx:nth-child(4),.s3 .bx:nth-child(4){background:rgba(224,164,88,.3)}
+.pb{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.pb i{display:block;height:100%;background:var(--signal);width:70%}
+.ck{display:flex;gap:8px;align-items:center;font-family:var(--mono);font-size:11px;color:var(--ok)}
+.ck::before{content:'✓'}
+.store{border:1px solid var(--line);border-radius:8px;padding:12px;font-family:var(--mono);font-size:12px;text-align:center;background:var(--bg-panel)}
+.live{margin:auto 0 auto;text-align:center;font-family:var(--display);text-transform:uppercase;font-size:1.4rem;color:var(--signal)}
+</style>
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<div class="jbar" aria-hidden="true"></div>
+<div class="topnav"><a href="../index.html">← Back to portfolio</a><span>Project journey</span></div>
+<header class="jhero">
+  <p class="kicker">Project journey · Project Co-Lead, Cross-Functional Team</p>
+  <h1>CEAT Connect Mobile App</h1>
+  <p class="lede">From a blank screen to the Google Play Store and the Apple App Store. Scroll and watch the phone fill in as the project moves.</p>
+  
+</header>
+<main>
+<section class="pin " data-pin="5" style="--n:5"><div class="pin-inner "><div class="txt"><div class="chap" data-at="0"><span class="n">01</span><h3>Concept</h3><p>It started with a plain question: what do dealers actually need in their pocket? I aligned a cross-functional team around one clear purpose before anyone opened a design tool.</p></div><div class="chap" data-at="1"><span class="n">02</span><h3>Design together</h3><p>Rough sketches went to stakeholders early. Changing a sketch costs minutes; changing a built screen costs weeks.</p></div><div class="chap" data-at="2"><span class="n">03</span><h3>Build in the open</h3><p>As co-lead I kept scope, progress and trade-offs visible to everyone, so no one was surprised by what the app would and would not do at launch.</p></div><div class="chap" data-at="3"><span class="n">04</span><h3>Test with real users</h3><p>Before submitting to the stores, the app went through proper testing, and I tracked every issue to a decision, not just a fix.</p></div><div class="chap" data-at="4"><span class="n">05</span><h3>Public launch</h3><p>Live on the Google Play Store and the Apple App Store. I handled the store requirements and the launch checklist with the team.</p></div></div><div class="vis"><div class="phone"><div class="scr s0 on" data-at="0"><span class="cap">Sketch</span><div class="bx"></div><div class="bx t"></div><div class="bx"></div><div class="bx"></div></div><div class="scr s1" data-at="1"><span class="cap">Design</span><div class="bx"></div><div class="bx t"></div><div class="bx"></div><div class="bx"></div></div><div class="scr s2" data-at="2"><span class="cap">Build</span><div class="bx"></div><div class="bx t"></div><div class="bx"></div><div class="bx"></div><div class="pb"><i></i></div></div><div class="scr s3" data-at="3"><span class="cap">Test</span><div class="bx"></div><div class="bx t"></div><div class="ck">Login</div><div class="ck">Navigation</div><div class="ck">Edge cases</div></div><div class="scr s4" data-at="4"><span class="cap">Launch</span><div class="live">Live</div><div class="store">Google Play</div><div class="store">App Store</div></div></div></div></div></section>
+</main>
+<footer class="jfoot">
+  <div class="take"><span class="k">What stayed with me</span><p>A store launch is a beginning. The app earns its place after day one.</p></div>
+  <div class="foot-links">
+    <a class="btn" href="../index.html">← Back to portfolio</a>
+    <a class="btn primary" href="crm-automation.html">Next journey: CRM Automation Project ↗</a>
+  </div>
+  <p class="fine">This page tells the story of my role and approach. Internal systems, data and figures are left out on purpose.</p>
+</footer>
+<script>
+(function () {
+  var root = document.documentElement;
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+  var pins = [].slice.call(document.querySelectorAll('[data-pin]'));
+  var sps = [].slice.call(document.querySelectorAll('[data-sp]'));
+
+  pins.forEach(function (p) {
+    var n = +p.getAttribute('data-pin') || 1;
+    p.style.setProperty('--n', n);
+    p._at = [].slice.call(p.querySelectorAll('[data-at]'));
+    var txt = p.querySelector('.txt');
+    if (txt) {
+      var d = document.createElement('div');
+      d.className = 'pdots'; d.setAttribute('aria-hidden', 'true');
+      for (var i = 0; i < n; i++) d.appendChild(document.createElement('i'));
+      txt.appendChild(d); p._dots = [].slice.call(d.children);
+    }
+  });
+
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var vh = window.innerHeight;
+    var max = root.scrollHeight - vh;
+    root.style.setProperty('--prog', max > 0 ? clamp(window.scrollY / max, 0, 1).toFixed(4) : 0);
+
+    pins.forEach(function (p) {
+      var n = +p.getAttribute('data-pin');
+      var r = p.getBoundingClientRect();
+      var span = r.height - vh;
+      var t = span > 0 ? clamp(-r.top / span, 0, 1) : 0;
+      var step = Math.min(n - 1, Math.floor(t * n));
+      p.style.setProperty('--pp', t.toFixed(4));
+      p.setAttribute('data-step', step);
+      p._at.forEach(function (e) {
+        var k = +e.getAttribute('data-at');
+        e.classList.toggle('on', step >= k);
+        e.classList.toggle('now', step === k);
+      });
+      if (p._dots) p._dots.forEach(function (d, i) { d.classList.toggle('on', i <= step); });
+    });
+
+    sps.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      el.style.setProperty('--sp', clamp((vh * 0.5 - r.top) / r.height, 0, 1).toFixed(4));
+    });
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+
+  // reveal on view
+  var els = [].slice.call(document.querySelectorAll('.rv, .io'));
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+    els.forEach(function (e) { io.observe(e); });
+  } else {
+    els.forEach(function (e) { e.classList.add('in'); });
+  }
+})();
+
+</script>
+<script>
+
+</script>
+</body>
+</html>
